@@ -1,4 +1,5 @@
 @use './../../../../../styles/variables.scss' as *;
+@use 'sass:color';
 
 .contact-section {
   &__header {
@@ -123,7 +124,7 @@
     }
 
     &::placeholder {
-      color: lighten($text-light, 10%);
+      color: color.adjust($text-light, $lightness: 10%);
     }
   }
 

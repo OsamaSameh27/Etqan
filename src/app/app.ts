@@ -11,7 +11,6 @@ import AOS from 'aos';
 import { AuthServices } from './features/auth/services/auth.services';
 import { LoadingSpinnerServicess } from './core/shared/services/loading-spinner';
 import { Loading } from './core/shared/loading/loading';
-import { BreadcrumbsServise } from './core/shared/services/breadcrumbs-servise';
 
 @Component({
   selector: 'app-root',
@@ -26,17 +25,20 @@ export class App implements OnInit {
 
   private router = inject(Router);
 
+  private loadingTimer?: ReturnType<typeof setTimeout>;
+
   constructor() {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
-        const url = event.url;
-
-        // لو التنقل مجرد fragment داخل نفس الصفحة، متظهرش spinner
-        if (url.includes('#')) {
+        if (event.url.includes('#')) {
           return;
         }
 
-        this.loadingService.show();
+        clearTimeout(this.loadingTimer);
+
+        this.loadingTimer = setTimeout(() => {
+          this.loadingService.show();
+        }, 150);
       }
 
       if (
@@ -44,9 +46,8 @@ export class App implements OnInit {
         event instanceof NavigationCancel ||
         event instanceof NavigationError
       ) {
-        setTimeout(() => {
-          this.loadingService.hide();
-        }, 1500);
+        clearTimeout(this.loadingTimer);
+        this.loadingService.hide();
       }
     });
   }

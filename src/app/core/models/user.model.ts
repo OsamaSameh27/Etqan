@@ -3,12 +3,11 @@ export interface User {
   email: string;
   phone: string;
   role: 'student' | 'teacher';
+  image?: string;
 
   // Teacher data
   subject?: string;
   bio?: string;
-  image?: string;
   experienceYears?: number;
   grades?: string[];
-
 }

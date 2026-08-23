@@ -6,6 +6,7 @@ import { Course } from '../../../../core/models/course.model';
 import { Breadcrumbs } from '../../../../core/shared/breadcrumbs/breadcrumbs';
 import { BreadcrumbsServise } from '../../../../core/shared/services/breadcrumbs-servise';
 
+
 @Component({
   selector: 'app-course-details',
   imports: [RouterModule, Breadcrumbs],

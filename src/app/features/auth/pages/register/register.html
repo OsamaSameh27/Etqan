@@ -202,23 +202,19 @@
                   />
                 </div>
               </div>
-
-              <!-- Image -->
-              <div class="login__group">
-                <label>رابط الصورة</label>
-
-                <div class="input-box">
-                  <i class="fa-solid fa-image"></i>
-
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="رابط صورة المدرس"
-                    formControlName="image"
-                  />
-                </div>
-              </div>
             }
+            <!-- Image -->
+            <div class="login__group">
+              <label>رابط الصورة</label>
+
+              <div class="input-box">
+                <i class="fa-solid fa-image"></i>
+                <input type="file" accept="image/*" (change)="onImageSelected($event)" />
+              </div>
+              @if (imagePreview) {
+                <img [src]="imagePreview" alt="صورة المستخدم" width="120" />
+              }
+            </div>
 
             <!-- Phone -->
             <div class="login__group">
@@ -358,7 +354,7 @@
             <button
               type="submit"
               class="btn btn-primary-custom w-100 py-2 mt-2"
-              [disabled]="registerForm.invalid"
+              [disabled]="registerForm.invalid || !selectedImage"
             >
               <span>إنشاء حساب</span>
               <i class="fa-solid fa-arrow-left ms-2"></i>
@@ -405,7 +401,15 @@
         <div class="login__hero-wrapper">
           <div class="hero-glow"></div>
           <div class="login__image">
-            <img src="/auth.png" alt="Register Illustration" class="img-fluid hero-img" />
+            <img
+              src="/auth.webp"
+              width="960"
+              height="704"
+              fetchpriority="high"
+              decoding="async"
+              alt="إنشاء حساب جديد على منصة إتقان"
+              class="img-fluid hero-img"
+            />
           </div>
 
           <div class="floating-chip chip-top-right">

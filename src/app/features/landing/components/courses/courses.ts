@@ -1,5 +1,4 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
-import { AddCourse } from '../../../teacher/components/add-course/add-course';
 import { AddcourseService } from '../../../teacher/services/addcourseservice';
 import { Course } from '../../../../core/models/course.model';
 import { AuthServices } from '../../../auth/services/auth.services';
@@ -20,23 +19,30 @@ export class Courses {
   private cdr = inject(ChangeDetectorRef);
   teacherNames: { [key: string]: string } = {};
 
-
   async ngOnInit() {
-
     const snapshot = await this.coursesServices.getAllCourses();
+
     this.courses = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...(doc.data() as Course),
     }));
-    for (const course of this.courses) {
-      if (!course.teacherId) continue;
 
-      const teacher = await this.authService.getUserData(course.teacherId);
+    const teacherIds = [
+      ...new Set(
+        this.courses
+          .map((course) => course.teacherId)
+          .filter((teacherId): teacherId is string => Boolean(teacherId)),
+      ),
+    ];
 
-      if (teacher) {
-        this.teacherNames[course.teacherId] = teacher.name;
-      }
-      this.cdr.detectChanges();
-    }
+    const teachers = await Promise.all(
+      teacherIds.map((teacherId) => this.authService.getUserData(teacherId)),
+    );
+
+    this.teacherNames = Object.fromEntries(
+      teacherIds.map((teacherId, index) => [teacherId, teachers[index]?.name ?? 'مدرس الدورة']),
+    );
+
+    this.cdr.detectChanges();
   }
 }

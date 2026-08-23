@@ -7,6 +7,7 @@ import { RouterLink, Router } from '@angular/router';
 import { Alerts } from '../../../../core/utils/alerts';
 import { User } from '../../../../core/models/user.model';
 import { Breadcrumbs } from '../../../../core/shared/breadcrumbs/breadcrumbs';
+import { CloudinaryService } from '../../services/cloudinary.service';
 
 @Component({
   selector: 'app-register',
@@ -17,6 +18,8 @@ import { Breadcrumbs } from '../../../../core/shared/breadcrumbs/breadcrumbs';
 export class Register {
   showPassword = false;
   showConfirmPassword = false;
+  selectedImage: File | null = null;
+  imagePreview = '';
 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
@@ -38,7 +41,7 @@ export class Register {
 
       subject: [''],
       bio: ['', Validators.minLength(10)],
-      image: [''],
+      // image: [''],
       experienceYears: [],
       grades: [[] as string[]],
     },
@@ -54,7 +57,6 @@ export class Register {
   private updateRoleValidators(role: 'student' | 'teacher') {
     const subject = this.registerForm.controls.subject;
     const bio = this.registerForm.controls.bio;
-    const image = this.registerForm.controls.image;
     const experienceYears = this.registerForm.controls.experienceYears;
     const grads = this.registerForm.controls.grades;
 
@@ -63,24 +65,34 @@ export class Register {
 
       bio.setValidators([Validators.required, Validators.minLength(10)]);
 
-      image.setValidators(Validators.required);
-
       experienceYears.setValidators([Validators.required, Validators.min(0)]);
 
       grads.setValidators([Validators.required, Validators.minLength(1)]);
     } else {
       subject.clearValidators();
       bio.clearValidators();
-      image.clearValidators();
       experienceYears.clearValidators();
       grads.clearValidators();
     }
 
     subject.updateValueAndValidity();
     bio.updateValueAndValidity();
-    image.updateValueAndValidity();
     experienceYears.updateValueAndValidity();
     grads.updateValueAndValidity();
+  }
+
+  onImageSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    this.selectedImage = file;
+    this.imagePreview = URL.createObjectURL(file);
+
+    // قيمة مؤقتة لإزالة خطأ required من حقل الصورة
   }
 
   onGradeChange(grade: string, event: Event) {
@@ -102,26 +114,36 @@ export class Register {
 
   private authServices = inject(AuthServices);
   private router = inject(Router);
+  private cloudinaryService = inject(CloudinaryService);
 
   async register() {
     if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      return;
+    }
+
+    if (!this.selectedImage) {
+      Alerts.error('الصورة مطلوبة', 'يرجى اختيار صورة شخصية');
       return;
     }
     try {
       const formValue = this.registerForm.getRawValue();
+      const imageUrl = await this.cloudinaryService.uploadImage(this.selectedImage);
+  
 
       const userCredential = await this.authServices.register(formValue.email, formValue.password);
+
       const userData: User = {
         name: formValue.name,
         email: formValue.email,
         phone: formValue.phone,
         role: formValue.role as 'student' | 'teacher',
         grades: formValue.grades,
+        image: imageUrl,
       };
       if (formValue.role === 'teacher') {
         userData.subject = formValue.subject;
         userData.bio = formValue.bio;
-        userData.image = formValue.image;
         userData.experienceYears = formValue.experienceYears;
         userData.grades = formValue.grades;
       }

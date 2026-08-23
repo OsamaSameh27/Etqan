@@ -222,13 +222,15 @@
       filter: blur(40px);
       animation: pulse-glow 4s infinite;
     }
-
     .hero-img {
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 400px;
+      object-fit: contain;
       position: relative;
       z-index: 1;
-      max-height: 300px;
-      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.08));
-      animation: floatStudent 6s ease-in-out infinite;
+      filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.06));
     }
   }
 }

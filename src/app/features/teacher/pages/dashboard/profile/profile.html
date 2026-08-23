@@ -10,20 +10,24 @@
         <!-- البطاقة الجانبية -->
         <div class="profile-sidebar">
           <div class="profile-avatar">
-            <i class="fas fa-user"></i>
+            @if (!user.image) {
+              <i class="fas fa-user"></i>
+            } @else {
+              <img [src]="user.image" [alt]="user.name" />
+            }
           </div>
-          <h3 class="sidebar-name">{{ user.name }}</h3>
+          <h3 class="sidebar-name m-3">{{ user.name }}</h3>
           <span class="sidebar-badge">
             {{ user.role === 'teacher' ? 'مدرس' : 'طالب' }}
           </span>
           <div class="sidebar-stats">
             <div class="stat-item">
-              <span class="stat-value">12</span>
-              <span class="stat-label">كورس</span>
+              <span class="stat-value">{{ courses.length }}</span>
+              <span class="stat-label">عدد الكورسات</span>
             </div>
             <div class="stat-item">
-              <span class="stat-value">8</span>
-              <span class="stat-label">مجموعة</span>
+              <span class="stat-value">{{ groups.length }}</span>
+              <span class="stat-label">عدد المجموعات</span>
             </div>
           </div>
         </div>
@@ -94,6 +98,22 @@
                     </span>
                   }
                 </div>
+                <div class="info-item">
+                  <span class="info-label"> سنوات الخبره</span>
+
+                  @if (isEditing) {
+                    <input
+                      id="schedule"
+                      type="text"
+                      class="form-input"
+                      [(ngModel)]="editData.experienceYears"
+                    />
+                  } @else {
+                    <span class="info-value">
+                      {{ user.experienceYears }}
+                    </span>
+                  }
+                </div>
 
                 <!-- نوع الحساب -->
                 <div class="info-item">
@@ -102,6 +122,33 @@
                   <span class="info-value">
                     {{ user.role === 'teacher' ? 'مدرس' : 'طالب' }}
                   </span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">الصوره الشخصيه</span>
+
+                  @if (isEditing) {
+                    <input
+                      type="file"
+                      class="form-input"
+                      accept="image/png,image/jpeg,image/webp"
+                      (change)="onImageSelected($event)"
+                    />
+
+                    @if (imagePreview) {
+                      <img
+                        [src]="imagePreview"
+                        alt="معاينة الصورة الشخصية"
+                        width="120"
+                        height="120"
+                      />
+                    }
+                  } @else {
+                    @if (user.image) {
+                      <img [src]="user.image" [alt]="user.name" width="120" height="120" />
+                    } @else {
+                      <span class="info-value">لا توجد صورة</span>
+                    }
+                  }
                 </div>
               </div>
 

@@ -14,9 +14,14 @@ export class TeachersService {
 
     const snapshot = await getDocs(q);
 
-    const teachers = snapshot.docs.map((doc) => ({
-      ...(doc.data() as User),
-    }));
+    const teachers = snapshot.docs.map((teacherDoc) => {
+      const teacher = teacherDoc.data() as User;
+
+      return {
+        ...teacher,
+        grades: Array.isArray(teacher.grades) ? teacher.grades : [],
+      };
+    });
     this.teachers.set(teachers);
   }
 }

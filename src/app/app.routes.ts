@@ -43,4 +43,10 @@ export const routes: Routes = [
       },
     ],
   },
+
+  {
+    path: '**',
+    title: 'الصفحة غير موجودة | إتقان',
+    loadComponent: () => import('./core/shared/not-found/not-found').then((m) => m.NotFound),
+  },
 ];

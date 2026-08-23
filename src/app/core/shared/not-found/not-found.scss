@@ -1,0 +1,44 @@
+@use './../../../../styles/variables.scss' as *;
+
+.not-found {
+  min-height: 100vh;
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: $background;
+
+  &__content {
+    width: 100%;
+    max-width: 600px;
+    padding: 50px 30px;
+    background: white;
+    border: 1px solid $border-color;
+    border-radius: $radius-xl;
+    box-shadow: $shadow-lg;
+  }
+
+  &__code {
+    display: block;
+    color: $primary;
+    font-size: clamp(5rem, 15vw, 9rem);
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  &__title {
+    margin: 24px 0 12px;
+    color: $text-dark;
+  }
+
+  &__description {
+    margin-bottom: 30px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+}
