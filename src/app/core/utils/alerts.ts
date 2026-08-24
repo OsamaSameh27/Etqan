@@ -24,4 +24,23 @@ export class Alerts {
       },
     });
   }
+
+  static async confirm(title: string, text: string) {
+    const result = await Swal.fire({
+      icon: 'warning',
+      title,
+      text,
+      showCancelButton: true,
+      confirmButtonText: 'نعم، احذف',
+      cancelButtonText: 'لا',
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
+      reverseButtons: true,
+      customClass: {
+        container: 'my-swal-container',
+      },
+    });
+
+    return result.isConfirmed;
+  }
 }

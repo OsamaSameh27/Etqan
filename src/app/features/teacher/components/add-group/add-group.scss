@@ -87,6 +87,21 @@
     box-shadow: 0 0 0 3px rgba($primary, 0.12);
     background: white;
   }
+
+  &.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(#dc3545, 0.1);
+    background: white;
+  }
+}
+
+.error-msg {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
 }
 
 .form-textarea {
@@ -114,9 +129,14 @@
   cursor: pointer;
   transition: all $transition;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: $primary-dark;
     transform: translateY(-2px);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
   }
 }
 

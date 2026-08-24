@@ -8,6 +8,7 @@ import { Alerts } from '../../../../core/utils/alerts';
 import { User } from '../../../../core/models/user.model';
 import { Breadcrumbs } from '../../../../core/shared/breadcrumbs/breadcrumbs';
 import { CloudinaryService } from '../../services/cloudinary.service';
+import { LoadingSpinnerServicess } from '../../../../core/shared/services/loading-spinner';
 
 @Component({
   selector: 'app-register',
@@ -18,6 +19,7 @@ import { CloudinaryService } from '../../services/cloudinary.service';
 export class Register {
   showPassword = false;
   showConfirmPassword = false;
+  isSubmitting = false;
   selectedImage: File | null = null;
   imagePreview = '';
 
@@ -115,6 +117,7 @@ export class Register {
   private authServices = inject(AuthServices);
   private router = inject(Router);
   private cloudinaryService = inject(CloudinaryService);
+  private loadingService = inject(LoadingSpinnerServicess);
 
   async register() {
     if (this.registerForm.invalid) {
@@ -126,6 +129,10 @@ export class Register {
       Alerts.error('الصورة مطلوبة', 'يرجى اختيار صورة شخصية');
       return;
     }
+
+    this.isSubmitting = true;
+    this.loadingService.show();
+
     try {
       const formValue = this.registerForm.getRawValue();
       const imageUrl = await this.cloudinaryService.uploadImage(this.selectedImage);
@@ -150,7 +157,7 @@ export class Register {
       await this.authServices.saveUserData(userCredential.user.uid, userData);
 
       Alerts.success('تم إنشاء الحساب بنجاح', 'تم إنشاء الحساب بنجاح');
-      this.router.navigate(['/login']);
+      await this.router.navigate(['/login']);
     } catch (error: any) {
       switch (error.code) {
         case 'auth/email-already-in-use':
@@ -168,6 +175,9 @@ export class Register {
         default:
           Alerts.error('حدث خطأ', error.message);
       }
+    } finally {
+      this.isSubmitting = false;
+      this.loadingService.hide();
     }
   }
 }

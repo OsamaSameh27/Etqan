@@ -7,6 +7,7 @@ export interface Group {
   teacherId: string;
   maxStudents: number;
   schedule: string;
+  time?: string;
   location: string;
   createdAt: Timestamp;
 }

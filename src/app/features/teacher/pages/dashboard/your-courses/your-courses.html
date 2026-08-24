@@ -6,6 +6,20 @@
         <p class="page-subtitle">إدارة ومتابعة الدورات التي قمت بإنشائها</p>
       </div>
       <div class="">
+        <button
+          class="btn btn-danger-custom float-end m-2"
+          type="button"
+          [disabled]="courses.length === 0 || isDeletingAll"
+          (click)="deleteAllCourses()"
+        >
+          @if (isDeletingAll) {
+            <i class="fas fa-spinner fa-spin me-2"></i>
+            جاري الحذف...
+          } @else {
+            <i class="fas fa-trash me-2"></i>
+            حذف كل الدورات
+          }
+        </button>
         <button class="btn btn-primary-custom float-end m-2" type="button" (click)="loadCourses()">
           <i class="fas fa-rotate-right me-2"></i>
           تحديث
@@ -13,33 +27,39 @@
         <button
           class="btn btn-primary-custom float-end m-2"
           type="button"
-          (click)="isAddCourseOpen = true"
+          (click)="openAddCourse()"
         >
           <i class="fas fa-plus me-2"></i>
           إنشاء دورة جديدة
         </button>
-        @if (isAddCourseOpen == true) {
+        @if (isAddCourseOpen) {
           <app-add-course
             [course]="selectedCourse"
-            (closeModal)="isAddCourseOpen = false"
+            (closeModal)="closeCourseModal()"
           ></app-add-course>
         }
       </div>
     </div>
 
     <div class="row g-4">
-      @for (item of courses; track $index) {
-        <div class="col- col-md-6 col-lg-4">
-          <div class="card course-card h-100">
-            <div class="card-body">
-              <div class="d-flex justify-content-between align-items-start mb-3">
-                <span class="badge badge-status bg-success">نشطة</span>
+      @for (item of courses; track item.id) {
+        <div class="col-12 cards col-sm-6 col-xl-4 ">
+          <article class="card course-card h-100">
+            <div class="card-body d-flex flex-column">
+              <div class="course-card__header">
+                <div class="course-card__identity">
+                  <div class="course-card__icon" aria-hidden="true">
+                    <i class="fa-solid fa-book-open"></i>
+                  </div>
+                  <span class="course-card__subject">{{ item.subject }}</span>
+                </div>
                 <div class="dropdown">
                   <button
-                    class="btn btn-sm btn-light"
+                    class="btn course-card__menu"
                     type="button"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
+                    aria-label="خيارات الدورة"
                   >
                     <i class="fas fa-ellipsis-v"></i>
                   </button>
@@ -62,42 +82,27 @@
                 </div>
               </div>
 
-              <h5 class="card-title">{{ item.title }}</h5>
-              <p class="card-text text-muted">{{ item.description }}</p>
+              <h5 class="card-title course-card__title">{{ item.title }}</h5>
+              <p class="card-text text-muted course-card__description">{{ item.description }}</p>
 
-              <div class="d-flex align-items-center gap-3 mb-3">
-                <span class="text-muted small">
-                  <i class="far fa-user me-1"></i>
-                  {{ item.grade }}
-                </span>
-                <span class="text-muted small">
-                  <i class="fa-solid fa-dollar-sign"></i> {{ item.price }}
-                </span>
-              </div>
-
-              <div class="progress-wrapper mb-3">
-                <div class="d-flex justify-content-between mb-2">
-                  <span class="progress-label">التقدم</span>
-                  <span class="progress-percentage">68%</span>
+              <div class="course-card__details mt-auto">
+                <div class="course-card__detail">
+                  <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
+                  <div>
+                    <span>السنة الدراسية</span>
+                    <strong>{{ item.grade }}</strong>
+                  </div>
                 </div>
-                <div class="progress">
-                  <div
-                    class="progress-bar"
-                    role="progressbar"
-                    style="width: 68%"
-                    aria-valuenow="68"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
+                <div class="course-card__detail">
+                  <i class="fa-solid fa-money-bill-wave" aria-hidden="true"></i>
+                  <div>
+                    <span>السعر</span>
+                    <strong>{{ item.price }} جنيه</strong>
+                  </div>
                 </div>
               </div>
-
-              <button class="btn btn-primary-custom w-100" type="button">
-                <i class="fas fa-eye ms-2"></i>
-                عرض الدورة
-              </button>
             </div>
-          </div>
+          </article>
         </div>
       }
     </div>

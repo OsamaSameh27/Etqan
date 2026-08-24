@@ -1,6 +1,6 @@
 import { Component, inject, input, output } from '@angular/core';
 import { Group } from '../../../../core/models/group.model';
-import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Timestamp } from 'firebase/firestore';
 import { Addgroupservice } from '../../services/addgroupservice';
 import { AuthServices } from '../../../auth/services/auth.services';
@@ -19,7 +19,7 @@ export class AddGroup {
   closeModal = output<void>();
   groups = input<Group | null>(null);
   courses = input<Course[]>([]);
-  private Groups = inject(Groups);
+  private groupsPage = inject(Groups);
 
   close() {
     this.closeModal.emit();
@@ -27,12 +27,13 @@ export class AddGroup {
 
   private fb = inject(NonNullableFormBuilder);
   groupform = this.fb.group({
-    name: [''],
-    courseId: [''],
+    name: ['', [Validators.required, Validators.minLength(3)]],
+    courseId: ['', [Validators.required]],
     teacherId: [''],
-    maxStudents: [0],
-    schedule: [''],
-    location: [''],
+    maxStudents: [0, [Validators.required, Validators.min(1)]],
+    schedule: ['', [Validators.required]],
+    time: ['', [Validators.required]],
+    location: ['', [Validators.required]],
     createdAt: [Timestamp.now()],
   });
 
@@ -40,44 +41,63 @@ export class AddGroup {
   private authServises = inject(AuthServices);
 
   ngOnInit() {
-    console.log('courses:', this.courses());
     if (this.groups()) {
       this.groupform.patchValue({
         courseId: this.groups()!.courseId,
         name: this.groups()!.name,
         maxStudents: this.groups()!.maxStudents,
         schedule: this.groups()!.schedule,
+        time: this.groups()!.time ?? '',
         location: this.groups()!.location,
       });
     }
-    console.log('FORM:', this.groupform.getRawValue());
   }
-  async addGroup() {
-    if (this.groupform.invalid) return;
+
+  async saveGroup() {
+    if (this.groupform.invalid) {
+      this.groupform.markAllAsTouched();
+      return;
+    }
 
     try {
       const formValue = this.groupform.getRawValue();
       const firebaseUser = await this.authServises.getCurrentUser();
 
       if (!firebaseUser) {
+        Alerts.error('تعذر الحفظ', 'يجب تسجيل الدخول أولًا.');
         return;
       }
-      const GroupUserData: Group = {
+
+      const groupData = {
         name: formValue.name,
         maxStudents: formValue.maxStudents,
         schedule: formValue.schedule,
-        createdAt: formValue.createdAt,
-        teacherId: firebaseUser.uid,
+        time: formValue.time,
         location: formValue.location,
         courseId: formValue.courseId,
       };
 
-      await this.addGroupService.addGroup(GroupUserData);
-      Alerts.success('تم إنشاء الكورس بنجاح', 'تم إنشاء الكورس بنجاح');
+      const currentGroup = this.groups();
+
+      if (currentGroup?.id) {
+        await this.addGroupService.updateGroup(currentGroup.id, groupData);
+        Alerts.success('تم تعديل المجموعة بنجاح', 'تم حفظ التعديلات بنجاح');
+      } else {
+        const newGroup: Group = {
+          ...groupData,
+          createdAt: Timestamp.now(),
+          teacherId: firebaseUser.uid,
+        };
+
+        await this.addGroupService.addGroup(newGroup);
+        Alerts.success('تم إنشاء المجموعة بنجاح', 'تم إنشاء المجموعة بنجاح');
+      }
+
+      await this.groupsPage.loadGroup();
       this.closeModal.emit();
-      this.Groups.loadGroup()
     } catch (error) {
-      console.error('Error adding course:', error);
+      console.error('Error saving group:', error);
+      Alerts.error('تعذر الحفظ', 'حدث خطأ أثناء حفظ المجموعة. حاول مرة أخرى.');
     }
   }
 }

@@ -3,7 +3,7 @@
     <h2 class="page-title">{{ groups()? 'تعديل المجموعه' : 'إنشاء مجموعه جديدة' }}</h2>
     <p class="page-subtitle">أدخل بيانات المجموعة أدناه</p>
 
-    <form class="group-form" [formGroup]="groupform" (ngSubmit)="addGroup()">
+    <form class="group-form" [formGroup]="groupform" (ngSubmit)="saveGroup()">
       <!-- اسم المجموعة -->
       <div class="form-group">
         <label class="form-label" for="name">اسم المجموعة</label>
@@ -14,20 +14,45 @@
           class="form-input"
           placeholder="مثال: مجموعة رياضيات الصف الأول"
           formControlName="name"
+          [class.is-invalid]="groupform.controls.name.touched && groupform.controls.name.invalid"
         />
+        @if (groupform.controls.name.touched && groupform.controls.name.errors?.['required']) {
+          <p class="error-msg text-danger">
+            <i class="fa-solid fa-circle-exclamation me-1"></i> هذا الحقل مطلوب
+          </p>
+        }
+        @if (groupform.controls.name.touched && groupform.controls.name.errors?.['minlength']) {
+          <p class="error-msg text-danger">
+            <i class="fa-solid fa-circle-exclamation me-1"></i> اسم المجموعة يجب أن يكون 3 أحرف على الأقل
+          </p>
+        }
       </div>
 
       <!-- الكورس -->
       <div class="form-group">
         <label class="form-label" for="course">الدورة</label>
 
-        <select id="course" class="form-select" formControlName="courseId">
+        <select
+          id="course"
+          class="form-select"
+          formControlName="courseId"
+          [class.is-invalid]="
+            groupform.controls.courseId.touched && groupform.controls.courseId.invalid
+          "
+        >
           <option value="" disabled>اختر الدورة</option>
 
           @for (course of courses(); track course.id) {
             <option [value]="course.id">{{ course.title }} -{{ course.grade }}</option>
           }
         </select>
+        @if (
+          groupform.controls.courseId.touched && groupform.controls.courseId.errors?.['required']
+        ) {
+          <p class="error-msg text-danger">
+            <i class="fa-solid fa-circle-exclamation me-1"></i> اختر الدورة
+          </p>
+        }
       </div>
 
       <!-- العدد + الموعد -->
@@ -42,20 +67,69 @@
             formControlName="maxStudents"
             min="1"
             placeholder="مثال: 20"
+            [class.is-invalid]="
+              groupform.controls.maxStudents.touched && groupform.controls.maxStudents.invalid
+            "
           />
+          @if (
+            groupform.controls.maxStudents.touched &&
+            groupform.controls.maxStudents.errors?.['required']
+          ) {
+            <p class="error-msg text-danger">
+              <i class="fa-solid fa-circle-exclamation me-1"></i> هذا الحقل مطلوب
+            </p>
+          }
+          @if (
+            groupform.controls.maxStudents.touched && groupform.controls.maxStudents.errors?.['min']
+          ) {
+            <p class="error-msg text-danger">
+              <i class="fa-solid fa-circle-exclamation me-1"></i> العدد يجب ألا يقل عن طالب واحد
+            </p>
+          }
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="schedule"> الموعد </label>
+          <label class="form-label" for="schedule">أيام المجموعة</label>
 
-          <input
+          <select
             id="schedule"
-            type="text"
-            class="form-input"
+            class="form-select"
             formControlName="schedule"
-            placeholder="مثال: الأحد والثلاثاء 4:00 م"
-          />
+            [class.is-invalid]="
+              groupform.controls.schedule.touched && groupform.controls.schedule.invalid
+            "
+          >
+            <option value="" disabled>اختر أيام المجموعة</option>
+            <option value="الأحد والأربعاء">الأحد والأربعاء</option>
+            <option value="الاثنين والخميس">الاثنين والخميس</option>
+            <option value="السبت والثلاثاء">السبت والثلاثاء</option>
+          </select>
+          @if (
+            groupform.controls.schedule.touched && groupform.controls.schedule.errors?.['required']
+          ) {
+            <p class="error-msg text-danger">
+              <i class="fa-solid fa-circle-exclamation me-1"></i> اختر أيام المجموعة
+            </p>
+          }
         </div>
+      </div>
+
+      <!-- الساعة -->
+      <div class="form-group">
+        <label class="form-label" for="time">الساعة</label>
+
+        <input
+          id="time"
+          type="time"
+          class="form-input"
+          formControlName="time"
+          [class.is-invalid]="groupform.controls.time.touched && groupform.controls.time.invalid"
+        />
+        @if (groupform.controls.time.touched && groupform.controls.time.errors?.['required']) {
+          <p class="error-msg text-danger">
+            <i class="fa-solid fa-circle-exclamation me-1"></i> اختر موعد المجموعة
+          </p>
+        }
       </div>
 
       <!-- المكان -->
@@ -68,12 +142,22 @@
           class="form-input"
           formControlName="location"
           placeholder="مثال: قاعة 1"
+          [class.is-invalid]="
+            groupform.controls.location.touched && groupform.controls.location.invalid
+          "
         />
+        @if (
+          groupform.controls.location.touched && groupform.controls.location.errors?.['required']
+        ) {
+          <p class="error-msg text-danger">
+            <i class="fa-solid fa-circle-exclamation me-1"></i> هذا الحقل مطلوب
+          </p>
+        }
       </div>
 
       <!-- الأزرار -->
       <div class="form-actions">
-        <button type="submit" class="btn-submit">
+        <button type="submit" class="btn-submit" [disabled]="groupform.invalid">
           {{ groups() ? 'حفظ التعديلات' : 'إنشاء المجموعه' }}
         </button>
       </div>

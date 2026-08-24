@@ -61,14 +61,19 @@ export class Groups {
     this.isAddGroupOpen = true;
   }
 
+  closeGroupModal() {
+    this.isAddGroupOpen = false;
+    this.selectedGroup = null;
+  }
+
   async deleteGroup(group: Group) {
     if (!group.id) {
       return;
     }
     await this.addGroupService.deleteGroup(group.id);
-    this.courses = this.courses.filter((c) => c.id !== group.id);
+    this.groups = this.groups.filter((item) => item.id !== group.id);
     await this.loadGroup();
-    Alerts.success('تم الحذف', 'تم حذف الكورس بنجاح');
+    Alerts.success('تم الحذف', 'تم حذف المجموعة بنجاح');
   }
   editgroup(group: Group) {
     this.selectedGroup = group;

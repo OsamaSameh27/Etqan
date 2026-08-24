@@ -1,5 +1,5 @@
 import { Service } from '@angular/core';
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { db } from '../../../core/firebase';
 import { Course } from '../../../core/models/course.model';
 
@@ -10,6 +10,12 @@ export class AddcourseService {
   addCourse(course: Course) {
     return addDoc(this.courseCollection, course);
   }
+
+  updateCourse(id: string, course: Partial<Course>) {
+    const courseDoc = doc(db, 'courses', id);
+    return updateDoc(courseDoc, course);
+  }
+
   async getTeacherCourses(teacherId: string) {
     const q = query(this.courseCollection, where('teacherId', '==', teacherId));
     return await getDocs(q);
@@ -18,6 +24,11 @@ export class AddcourseService {
   deleteCourse(id: string) {
     const courseDoc = doc(db, 'courses', id);
     return deleteDoc(courseDoc);
+  }
+
+  async deleteAllTeacherCourses(teacherId: string) {
+    const snapshot = await this.getTeacherCourses(teacherId);
+    await Promise.all(snapshot.docs.map((courseDoc) => deleteDoc(courseDoc.ref)));
   }
 
   async getAllCourses() {

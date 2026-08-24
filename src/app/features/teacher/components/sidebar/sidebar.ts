@@ -28,7 +28,7 @@ export class Sidebar {
       await this.authService.logout();
       Alerts.success('Logout', 'You have been logged out successfully.');
       await this.authService.checkAuthState();
-      this.router.navigate(['']);
+      this.router.navigate(['/login']);
     } catch (error) {
       Alerts.error('Logout Failed', 'An error occurred while logging out. Please try again.');
     }

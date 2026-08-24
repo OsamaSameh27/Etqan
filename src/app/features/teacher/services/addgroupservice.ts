@@ -1,5 +1,5 @@
 import { Service } from '@angular/core';
-import { addDoc, collection, doc, getDocs, query, where, deleteDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, query, where, deleteDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../../core/firebase';
 import { Group } from '../../../core/models/group.model';
 
@@ -9,6 +9,11 @@ export class Addgroupservice {
 
   addGroup(group: Group) {
     return addDoc(this.courseCollection, group);
+  }
+
+  updateGroup(id: string, group: Partial<Group>) {
+    const groupDoc = doc(db, 'Groups', id);
+    return updateDoc(groupDoc, group);
   }
 
   async getTeacherGroups(teacherId: string) {

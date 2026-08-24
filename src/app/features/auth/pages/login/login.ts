@@ -5,6 +5,7 @@ import { AuthServices } from '../../services/auth.services';
 import { UserService } from '../../../../core/services/user-service';
 import { Alerts } from '../../../../core/utils/alerts';
 import { Breadcrumbs } from "../../../../core/shared/breadcrumbs/breadcrumbs";
+import { LoadingSpinnerServicess } from '../../../../core/shared/services/loading-spinner';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,7 @@ import { Breadcrumbs } from "../../../../core/shared/breadcrumbs/breadcrumbs";
 })
 export class Login {
   showPassword = false;
+  isSubmitting = false;
 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
@@ -23,6 +25,7 @@ export class Login {
   private authServices = inject(AuthServices);
   private router = inject(Router);
   private userService = inject(UserService);
+  private loadingService = inject(LoadingSpinnerServicess);
 
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -31,8 +34,13 @@ export class Login {
 
   async login() {
     if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
       return;
     }
+
+    this.isSubmitting = true;
+    this.loadingService.show();
+
     try {
       const formValue = this.loginForm.getRawValue();
 
@@ -46,12 +54,12 @@ export class Login {
       this.userService.user.set(user);
 
       if (user?.role === 'student') {
-        this.router.navigate(['/']);
+        await this.router.navigate(['/']);
         Alerts.success('مرحبًا', `مرحبًا بك مجددًا ${user.name}`);
       }
 
       if (user.role === 'teacher') {
-        this.router.navigate(['/']);
+        await this.router.navigate(['/']);
         Alerts.success('مرحبًا', `أستاذ/ ${user.name}، مرحبًا بك مجددًا `);
       }
     } catch (error: any) {
@@ -78,6 +86,9 @@ export class Login {
         default:
           Alerts.error('حدث خطأ', 'حدث خطأ غير متوقع، حاول مرة أخرى.');
       }
+    } finally {
+      this.isSubmitting = false;
+      this.loadingService.hide();
     }
   }
 }

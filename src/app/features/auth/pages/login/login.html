@@ -104,10 +104,15 @@
             <button
               type="submit"
               class="btn btn-primary-custom w-100 py-2 mt-2"
-              [disabled]="loginForm.invalid"
+              [disabled]="loginForm.invalid || isSubmitting"
             >
-              <span>تسجيل الدخول</span>
-              <i class="fa-solid fa-arrow-left ms-2"></i>
+              @if (isSubmitting) {
+                <i class="fa-solid fa-spinner fa-spin me-2"></i>
+                <span>جاري تسجيل الدخول...</span>
+              } @else {
+                <span>تسجيل الدخول</span>
+                <i class="fa-solid fa-arrow-left ms-2"></i>
+              }
             </button>
 
             <!-- Divider -->

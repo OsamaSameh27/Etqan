@@ -17,7 +17,7 @@
         @if (isAddGroupOpen) {
           <app-add-group
             [courses]="courses"
-            (closeModal)="isAddGroupOpen = false"
+            (closeModal)="closeGroupModal()"
             [groups]="selectedGroup"
           />
         }
@@ -26,19 +26,23 @@
 
     <div class="row g-4">
       @for (item of groups; track item.id) {
-        <div class="col-md-6 col-lg-4">
-          <div class="card group-card h-100">
-            <div class="group-card__gradient-top"></div>
-            <div class="card-body">
-              <div class="d-flex justify-content-between align-items-start mb-3">
-                <span class="badge badge-status bg-success"> نشطة </span>
-
+        <div class="col-12 col-md-6 col-lg-4">
+          <article class="card group-card h-100">
+            <div class="card-body d-flex flex-column">
+              <div class="group-card__header">
+                <div class="group-card__identity">
+                  <div class="group-card__icon" aria-hidden="true">
+                    <i class="fa-solid fa-users"></i>
+                  </div>
+                  <span class="group-card__badge">مجموعة دراسية</span>
+                </div>
                 <div class="dropdown">
                   <button
-                    class="btn btn-sm btn-light dropdown-toggle"
+                    class="btn group-card__menu"
                     type="button"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
+                    aria-label="خيارات المجموعة"
                   >
                     <i class="fas fa-ellipsis-v"></i>
                   </button>
@@ -65,56 +69,40 @@
                 </div>
               </div>
 
-              <div class="group-card__icon-wrap mb-3">
-                <i class="fas fa-users"></i>
-              </div>
+              <h5 class="card-title group-card__title">{{ item.name }}</h5>
 
-              <h5 class="card-title group-card__title">
-                {{ item.name }}
-              </h5>
-
-              <p class="card-text text-muted group-card__location">
-                <i class="fas fa-location-dot me-1"></i>
-                {{ item.location }}
-              </p>
-
-              <div class="d-flex align-items-center gap-3 mb-3">
-                <span class="text-muted small group-card__meta">
-                  <i class="far fa-user me-1"></i>
-                  {{ item.maxStudents }} طالب
-                </span>
-
-                <span class="text-muted small group-card__meta">
-                  <i class="fa-solid fa-clock me-1"></i>
-                  {{ item.schedule }}
-                </span>
-              </div>
-
-              <div class="progress-wrapper mb-3">
-                <div class="d-flex justify-content-between mb-2">
-                  <span class="progress-label"> التقدم </span>
-
-                  <span class="progress-percentage"> 68% </span>
+              <div class="group-card__details mt-auto">
+                <div class="group-card__detail">
+                  <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                  <div>
+                    <span>المكان</span>
+                    <strong>{{ item.location }}</strong>
+                  </div>
                 </div>
-
-                <div class="progress">
-                  <div
-                    class="progress-bar"
-                    role="progressbar"
-                    style="width: 68%"
-                    aria-valuenow="68"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
+                <div class="group-card__detail">
+                  <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
+                  <div>
+                    <span>الأيام</span>
+                    <strong>{{ item.schedule }}</strong>
+                  </div>
+                </div>
+                <div class="group-card__detail">
+                  <i class="fa-solid fa-clock" aria-hidden="true"></i>
+                  <div>
+                    <span>الساعة</span>
+                    <strong>{{ item.time || 'غير محدد' }}</strong>
+                  </div>
+                </div>
+                <div class="group-card__detail">
+                  <i class="fa-solid fa-user-group" aria-hidden="true"></i>
+                  <div>
+                    <span>الحد الأقصى</span>
+                    <strong>{{ item.maxStudents }} طالب</strong>
+                  </div>
                 </div>
               </div>
-
-              <button class="btn btn-primary-custom group-card__btn w-100" type="button">
-                <i class="fas fa-eye ms-2"></i>
-                عرض المجموعة
-              </button>
             </div>
-          </div>
+          </article>
         </div>
       }
     </div>

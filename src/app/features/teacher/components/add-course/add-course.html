@@ -5,7 +5,7 @@
     </h2>
     <p class="page-subtitle">أدخل بيانات الدورة أدناه</p>
 
-    <form class="course-form" [formGroup]="courseForm" (ngSubmit)="addCourse()">
+    <form class="course-form" [formGroup]="courseForm" (ngSubmit)="saveCourse()">
       <div class="form-group">
         <label class="form-label" for="title">عنوان الدورة</label>
         <input
@@ -15,7 +15,18 @@
           placeholder="مثال: الرياضيات المتقدمة"
           name="title"
           formControlName="title"
+          [class.is-invalid]="courseForm.controls.title.touched && courseForm.controls.title.invalid"
         />
+        @if (courseForm.controls.title.touched && courseForm.controls.title.errors?.['required']) {
+          <p class="error-msg text-danger">
+            <i class="fa-solid fa-circle-exclamation me-1"></i> هذا الحقل مطلوب
+          </p>
+        }
+        @if (courseForm.controls.title.touched && courseForm.controls.title.errors?.['minlength']) {
+          <p class="error-msg text-danger">
+            <i class="fa-solid fa-circle-exclamation me-1"></i> عنوان الدورة يجب أن يكون 4 أحرف على الأقل
+          </p>
+        }
       </div>
 
       <div class="form-group">
@@ -26,22 +37,56 @@
           placeholder="أدخل وصفاً تفصيلياً للدورة..."
           name="description"
           formControlName="description"
+          [class.is-invalid]="
+            courseForm.controls.description.touched && courseForm.controls.description.invalid
+          "
         ></textarea>
+        @if (
+          courseForm.controls.description.touched &&
+          courseForm.controls.description.errors?.['required']
+        ) {
+          <p class="error-msg text-danger">
+            <i class="fa-solid fa-circle-exclamation me-1"></i> هذا الحقل مطلوب
+          </p>
+        }
+        @if (
+          courseForm.controls.description.touched &&
+          courseForm.controls.description.errors?.['minlength']
+        ) {
+          <p class="error-msg text-danger">
+            <i class="fa-solid fa-circle-exclamation me-1"></i> الوصف يجب أن يكون 10 أحرف على الأقل
+          </p>
+        }
       </div>
       <div class="form-group">
         <label class="form-label">السنه الدراسيه</label>
-        <select class="form-select" formControlName="grade">
+        <select
+          class="form-select"
+          formControlName="grade"
+          [class.is-invalid]="courseForm.controls.grade.touched && courseForm.controls.grade.invalid"
+        >
           <option value="" disabled>اختر السنه</option>
           <option value="الاول الثانوي" selected>الاول الثانوي</option>
           <option value=" الثاني الثانوي">الثاني الثانوي</option>
           <option value="الثالث الثانوي">الثالث الثانوي</option>
         </select>
+        @if (courseForm.controls.grade.touched && courseForm.controls.grade.errors?.['required']) {
+          <p class="error-msg text-danger">
+            <i class="fa-solid fa-circle-exclamation me-1"></i> اختر السنة الدراسية
+          </p>
+        }
       </div>
 
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">الماده</label>
-          <select class="form-select" formControlName="subject">
+        <select
+          class="form-select"
+          formControlName="subject"
+          [class.is-invalid]="
+            courseForm.controls.subject.touched && courseForm.controls.subject.invalid
+          "
+        >
             <option value="" disabled selected>اختر الماده</option>
             <option value="علوم">علوم</option>
             <option value="رياضيات">رياضيات</option>
@@ -49,16 +94,41 @@
             <option value="لغة انجليزية">لغة انجليزية</option>
             <option value="تاريخ">تاريخ</option>
           </select>
+          @if (
+            courseForm.controls.subject.touched && courseForm.controls.subject.errors?.['required']
+          ) {
+            <p class="error-msg text-danger">
+              <i class="fa-solid fa-circle-exclamation me-1"></i> اختر المادة
+            </p>
+          }
         </div>
 
         <div class="form-group">
           <label class="form-label" for="price">السعر</label>
-          <input id="price" type="number" lang="eng" class="form-input" formControlName="price" />
+          <input
+            id="price"
+            type="number"
+            lang="eng"
+            class="form-input"
+            formControlName="price"
+            min="1"
+            [class.is-invalid]="courseForm.controls.price.touched && courseForm.controls.price.invalid"
+          />
+          @if (courseForm.controls.price.touched && courseForm.controls.price.errors?.['required']) {
+            <p class="error-msg text-danger">
+              <i class="fa-solid fa-circle-exclamation me-1"></i> هذا الحقل مطلوب
+            </p>
+          }
+          @if (courseForm.controls.price.touched && courseForm.controls.price.errors?.['min']) {
+            <p class="error-msg text-danger">
+              <i class="fa-solid fa-circle-exclamation me-1"></i> السعر يجب أن يكون أكبر من صفر
+            </p>
+          }
         </div>
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="btn-submit">
+        <button type="submit" class="btn-submit" [disabled]="courseForm.invalid">
           {{ course() ? 'حفظ التعديلات' : 'إنشاء الدورة' }}
         </button>
         <!-- <button type="button" class="btn-cancel">إلغاء</button> -->

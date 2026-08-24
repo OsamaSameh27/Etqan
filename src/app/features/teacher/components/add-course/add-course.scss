@@ -84,6 +84,43 @@
     box-shadow: 0 0 0 3px rgba($primary, 0.12);
     background: white;
   }
+
+  &.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(#dc3545, 0.1);
+    background: white;
+  }
+}
+
+.error-msg {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.form-input--readonly {
+  color: $primary-dark;
+  background: rgba($secondary, 0.12);
+  border-color: rgba($primary, 0.18);
+  cursor: not-allowed;
+  font-weight: 700;
+
+  &:focus {
+    background: rgba($secondary, 0.12);
+    border-color: rgba($primary, 0.18);
+    box-shadow: none;
+  }
+}
+
+.form-hint {
+  display: flex;
+  align-items: center;
+  color: $text-light;
+  font-size: 0.76rem;
+  line-height: 1.5;
 }
 
 .form-textarea {
@@ -110,9 +147,14 @@
   cursor: pointer;
   transition: all $transition;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: $primary-dark;
     transform: translateY(-2px);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
   }
 }
 

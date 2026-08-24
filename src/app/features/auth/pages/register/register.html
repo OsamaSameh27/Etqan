@@ -354,10 +354,15 @@
             <button
               type="submit"
               class="btn btn-primary-custom w-100 py-2 mt-2"
-              [disabled]="registerForm.invalid || !selectedImage"
+              [disabled]="registerForm.invalid || !selectedImage || isSubmitting"
             >
-              <span>إنشاء حساب</span>
-              <i class="fa-solid fa-arrow-left ms-2"></i>
+              @if (isSubmitting) {
+                <i class="fa-solid fa-spinner fa-spin me-2"></i>
+                <span>جاري إنشاء الحساب...</span>
+              } @else {
+                <span>إنشاء حساب</span>
+                <i class="fa-solid fa-arrow-left ms-2"></i>
+              }
             </button>
 
             <!-- Divider -->
