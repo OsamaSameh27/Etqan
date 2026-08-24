@@ -1,15 +1,20 @@
 <nav class="breadcrumbs" aria-label="مسار الصفحة">
-  @for (breadcrumb of breadcrumbs(); track breadcrumb.url; let last = $last) {
-    @if (!last) {
-      <a [routerLink]="breadcrumb.url">
-        {{ breadcrumb.label }}
-      </a>
+  <ol class="breadcrumbs__list">
+    @for (breadcrumb of breadcrumbs(); track breadcrumb.url; let first = $first; let last = $last) {
+      <li class="breadcrumbs__item">
+        @if (!last) {
+          <a [routerLink]="breadcrumb.url">
+            @if (first) {
+              <i class="fa-solid fa-house" aria-hidden="true"></i>
+            }
+            {{ breadcrumb.label }}
+          </a>
 
-      <span class="separator">/</span>
-    } @else {
-      <span class="current">
-        {{ breadcrumb.label }}
-      </span>
+          <i class="fa-solid fa-angle-left breadcrumbs__separator" aria-hidden="true"></i>
+        } @else {
+          <span aria-current="page">{{ breadcrumb.label }}</span>
+        }
+      </li>
     }
-  }
+  </ol>
 </nav>

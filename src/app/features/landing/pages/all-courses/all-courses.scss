@@ -1,0 +1,91 @@
+@use './../../../../../styles/variables.scss' as *;
+
+.courses-catalog { color: $text-dark; background: $background; }
+
+.catalog-intro {
+  padding: 9rem 0 3rem;
+  border-bottom: 1px solid $border-color;
+
+  &__back { display: inline-flex; gap: .5rem; margin-bottom: 2rem; color: $text-light; text-decoration: none; }
+  &__back:hover, &__eyebrow { color: $primary; }
+  &__content { display: block; }
+  &__eyebrow { display: block; margin-bottom: .8rem; font-weight: 800; }
+  h1 { margin: 0 0 .8rem; font-size: clamp(2rem, 4vw, 3.4rem); font-weight: 850; }
+  p { margin: 0; color: $text-light; }
+}
+
+.catalog-tools, .course-card {
+  background: #fff;
+  border: 1px solid $border-color;
+  border-radius: $radius-lg;
+}
+
+.catalog-content { padding: 2.5rem 0 5rem; }
+.catalog-tools { margin-bottom: 1.7rem; padding: 1rem; }
+.catalog-tools__top { display: grid; grid-template-columns: 1fr 230px; gap: 1rem; }
+.catalog-tools__subjects { display: flex; gap: 1rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid $border-color; }
+
+.search-field { position: relative; }
+.search-field i { position: absolute; top: 50%; right: 1rem; color: $primary; transform: translateY(-50%); }
+.search-field input, .grade-field select {
+  width: 100%;
+  height: 50px;
+  padding: 0 1rem;
+  color: $text-dark;
+  background: $background;
+  border: 1px solid transparent;
+  border-radius: $radius-md;
+  outline: 0;
+
+  &:focus { border-color: $primary; }
+}
+.search-field input { padding-right: 3rem; }
+.grade-field select { font-weight: 600; }
+.subject-chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+.subject-chip { padding: .45rem .85rem; color: $text-light; font-size: .8rem; font-weight: 700; background: transparent; border: 1px solid $border-color; border-radius: 999px; }
+.subject-chip--active { color: #fff; background: $primary; border-color: $primary; }
+
+.catalog-results { display: flex; justify-content: space-between; margin-bottom: 1rem; }
+.catalog-results__count { margin: 0; color: $text-light; }
+.catalog-results__clear { color: $primary; font-weight: 700; background: none; border: 0; }
+.courses-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+
+.course-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.3rem;
+
+  &__footer { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+  &__top { margin-bottom: 1.1rem; }
+  &__tags { display: flex; flex-wrap: wrap; gap: .35rem; }
+  &__tags span { padding: .3rem .6rem; color: $primary-dark; font-size: .72rem; font-weight: 700; background: rgba($secondary, .17); border-radius: 999px; }
+  &__body { display: flex; flex: 1; flex-direction: column; }
+  &__body h2 { margin: 0 0 .5rem; font-size: 1.15rem; font-weight: 800; line-height: 1.5; }
+  &__description { min-height: 3.3rem; color: $text-light; font-size: .85rem; line-height: 1.7; }
+  &__teacher { display: flex; align-items: center; gap: .6rem; margin-top: auto; padding: .7rem; background: $background; border-radius: $radius-md; }
+  &__teacher-icon { color: $primary; }
+  &__teacher div, &__price { display: grid; }
+  &__teacher span:not(.course-card__teacher-icon), &__price > span { color: $text-light; font-size: .68rem; }
+  &__teacher strong { font-size: .8rem; }
+  &__footer { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid $border-color; }
+  &__price strong { color: $primary; font-size: 1.2rem; }
+  &__price small { font-size: .7rem; }
+  &__link { padding: .6rem .8rem; color: #fff; font-size: .8rem; font-weight: 800; text-decoration: none; background: $primary; border-radius: 9px; }
+  &__link:hover { color: #fff; background: $primary-dark; }
+}
+
+.catalog-status { min-height: 240px; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: .6rem; padding: 2rem; text-align: center; }
+.catalog-status__action { padding: .6rem 1rem; color: #fff; background: $primary; border: 0; border-radius: 9px; }
+.catalog-loader { width: 36px; height: 36px; border: 3px solid $border-color; border-top-color: $primary; border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 991px) {
+  .courses-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 767px) {
+  .catalog-intro { padding: 8rem 0 2.5rem; }
+  .catalog-intro h1 { font-size: 2rem; }
+  .catalog-tools__top, .courses-grid { grid-template-columns: 1fr; }
+  .catalog-tools__subjects { display: grid; gap: .5rem; }
+}

@@ -30,52 +30,43 @@
       @for (course of courses; track course.id) {
         <div class="col-12 col-md-6 col-lg-4 d-flex" data-aos="zoom-in-up" data-aos-delay="0">
           <article class="courses-section__card w-100">
-            <div class="courses-section__media">
-              <img
-                src="https://picsum.photos/seed/course/640/360"
-                [alt]="course.title"
-                class="courses-section__thumb"
-                width="640"
-                height="360"
-                loading="lazy"
-              />
+            <div class="courses-section__card-head">
+              <span class="courses-section__subject-icon" aria-hidden="true">
+                <i class="fa-solid fa-book-open"></i>
+              </span>
+              <span class="courses-section__subject">{{ course.subject }}</span>
             </div>
 
             <div class="courses-section__content">
-              <h3 class="courses-section__course-title fw-bold mb-2">
+              <span class="courses-section__grade">{{ course.grade }}</span>
+
+              <h3 class="courses-section__course-title">
                 {{ course.title }}
               </h3>
 
-              <p class="courses-section__teacher mb-2">
-                <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i>
-                {{ teacherNames[course.teacherId] || 'مدرس الدورة' }}
-              </p>
+              <p class="courses-section__description">{{ course.description }}</p>
 
-              <div class="courses-section__tags mb-3">
-                <span class="courses-section__tag">
-                  {{ course.subject }}
+              <div class="courses-section__teacher">
+                <span class="courses-section__teacher-icon">
+                  <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i>
                 </span>
-
-                <span class="courses-section__tag">
-                  {{ course.grade }}
-                </span>
+                <div>
+                  <small>مدرس الكورس</small>
+                  <strong>{{ teacherNames[course.teacherId] || 'مدرس الدورة' }}</strong>
+                </div>
               </div>
 
-      
+              <footer class="courses-section__card-footer">
+                <div class="courses-section__price">
+                  <small>سعر الكورس</small>
+                  <strong>{{ course.price }} <span>جنيه</span></strong>
+                </div>
 
-              <div class="courses-section__pricing d-flex align-items-center gap-2 mb-3">
-                <span class="courses-section__price courses-section__price--current fw-bold">
-                  {{ course.price }} جنيه
-                </span>
-              </div>
-
-              <button
-                [routerLink]="['/course-details', course.id]"
-                type="button"
-                class="btn btn-outline-custom courses-section__btn w-100 mt-auto"
-              >
-                عرض التفاصيل
-              </button>
+                <a [routerLink]="['/course-details', course.id]" class="courses-section__details">
+                  التفاصيل
+                  <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                </a>
+              </footer>
             </div>
           </article>
         </div>
@@ -83,7 +74,7 @@
     </div>
 
     <div class="courses-section__footer text-center mt-4 mt-lg-5">
-      <a href="#courses" class="btn btn-primary-custom courses-section__cta px-4 py-2">
+      <a routerLink="/all-courses" class="btn btn-primary-custom courses-section__cta px-4 py-2">
         عرض جميع الكورسات
       </a>
     </div>

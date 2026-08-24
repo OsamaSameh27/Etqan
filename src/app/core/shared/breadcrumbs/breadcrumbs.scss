@@ -1,60 +1,72 @@
 @use './../../../../styles/variables.scss' as *;
 
 .breadcrumbs {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  padding: 14px 0;
-  font-family: "Cairo", Cairo, sans-serif;
-  font-size: 0.95rem;
+  padding: 0.75rem 0;
 
-  a {
+  &__list {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__item {
     display: inline-flex;
     align-items: center;
-    color: $text-light;
-    text-decoration: none;
-    font-weight: 600;
-    padding: 4px 7px;
-    border-radius: $radius-sm;
-    transition: all 0.25s ease;
+    min-width: 0;
 
-    &:hover {
+    a,
+    span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.45rem;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    a {
+      color: $text-light;
+      text-decoration: none;
+      border-radius: $radius-sm;
+
+      &:hover {
+        color: $primary;
+        background: rgba($primary, 0.06);
+      }
+    }
+
+    span[aria-current='page'] {
+      max-width: 280px;
+      overflow: hidden;
       color: $primary;
-      background: rgba($primary, 0.06);
-      transform: translateY(-1px);
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 
-  .separator {
-    color: $primary;
-    user-select: none;
-    margin: 0 2px;
-    font-size: 0.8rem;
-  }
-
-  .current {
-    color: $primary;
-    font-weight: 800;
-    padding: 4px 7px;
-    border-radius: $radius-sm;
-    transition: all 0.25s ease;
-
-    &:hover {
-      background: rgba($primary, 0.06);
-    }
+  &__separator {
+    margin: 0 0.15rem;
+    color: $secondary;
+    font-size: 0.65rem;
   }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 575px) {
   .breadcrumbs {
-    gap: 6px;
-    padding: 10px 0;
-    font-size: 0.85rem;
+    padding: 0.5rem 0;
 
-    a,
-    .current {
-      padding: 3px 5px;
+    &__item a,
+    &__item span {
+      padding-inline: 0.3rem;
+      font-size: 0.76rem;
+    }
+
+    &__item span[aria-current='page'] {
+      max-width: 150px;
     }
   }
 }

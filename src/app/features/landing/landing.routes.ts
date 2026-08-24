@@ -12,4 +12,10 @@ export const landingRoutes: Routes = [
     loadComponent: () =>
       import('./components/course-details/course-details').then((m) => m.CourseDetails),
   },
+  {
+    path: 'all-courses',
+    title: ' جميع الدورات | إتقان',
+    loadComponent: () =>
+      import('./pages/all-courses/all-courses').then((m) => m.AllCourses),
+  },
 ];

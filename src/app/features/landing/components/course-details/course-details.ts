@@ -22,34 +22,44 @@ export class CourseDetails {
 
   course: Course | null = null;
   teacherName = '';
+  isLoading = true;
+  courseNotFound = false;
 
   async ngOnInit() {
-    const courseId = this.route.snapshot.paramMap.get('id');
+    try {
+      const courseId = this.route.snapshot.paramMap.get('id');
 
-    if (!courseId) {
-      return;
-    }
-
-    const snapshot = await this.courseService.getCourseById(courseId);
-
-    if (!snapshot.exists()) {
-      return;
-    }
-
-    this.course = {
-      id: snapshot.id,
-      ...(snapshot.data() as Course),
-    };
-    this.breadcrumbsService.setCourseName(this.course.title);
-
-    if (this.course.teacherId) {
-      const teacher = await this.authService.getUserData(this.course.teacherId);
-
-      if (teacher) {
-        this.teacherName = teacher.name;
+      if (!courseId) {
+        this.courseNotFound = true;
+        return;
       }
-    }
 
-    this.cdr.detectChanges();
+      const snapshot = await this.courseService.getCourseById(courseId);
+
+      if (!snapshot.exists()) {
+        this.courseNotFound = true;
+        return;
+      }
+
+      this.course = {
+        id: snapshot.id,
+        ...(snapshot.data() as Course),
+      };
+      this.breadcrumbsService.setCourseName(this.course.title);
+
+      if (this.course.teacherId) {
+        const teacher = await this.authService.getUserData(this.course.teacherId);
+
+        if (teacher) {
+          this.teacherName = teacher.name;
+        }
+      }
+    } catch (error) {
+      console.error('Error loading course details:', error);
+      this.courseNotFound = true;
+    } finally {
+      this.isLoading = false;
+      this.cdr.detectChanges();
+    }
   }
 }

@@ -1,140 +1,116 @@
-@if (course) {
-  <section class="course-details">
-    <!-- Hero -->
-    <div class="course-details__hero">
-      <img src="logo.png" [alt]="course.title" class="course-details__hero-image" />
-      <div class="course-details__hero-overlay"></div>
-      <div class="course-details__hero-glow"></div>
+<main class="course-page" dir="rtl">
+  @if (isLoading) {
+    <div class="course-state" role="status">
+      <span class="course-state__loader" aria-hidden="true"></span>
+      <strong>جاري تحميل تفاصيل الكورس...</strong>
+    </div>
+  } @else if (course) {
+    <header class="course-hero">
       <div class="container">
-        <div class="course-details__hero-content">
-          <h1 class="course-details__title">
-            {{ course.title }}
-          </h1>
+        <app-breadcrumbs />
+
+        <div class="course-hero__layout">
+          <div class="course-hero__copy">
+            <span class="course-hero__eyebrow">تفاصيل الكورس</span>
+
+            <div class="course-hero__tags">
+              <span>{{ course.subject }}</span>
+              <span>{{ course.grade }}</span>
+            </div>
+
+            <h1>{{ course.title }}</h1>
+            <p>راجع معلومات الكورس والمدرس والسعر قبل اختيار المجموعة المناسبة ليك.</p>
+
+            <div class="course-hero__teacher">
+              <span><i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i></span>
+              <div>
+                <small>مدرس الكورس</small>
+                <strong>{{ teacherName || 'مدرس الدورة' }}</strong>
+              </div>
+            </div>
+          </div>
+
+          <aside class="enrollment-card" aria-label="سعر والاشتراك في الكورس">
+            <span class="enrollment-card__label">سعر الكورس</span>
+            <div class="enrollment-card__price">
+              {{ course.price }}
+              <small>جنيه</small>
+            </div>
+
+            <button type="button" class="enrollment-card__button">
+              اشترك في الكورس
+              <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            </button>
+
+            <p>
+              <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+              راجع تفاصيل الكورس قبل إرسال طلب الاشتراك.
+            </p>
+          </aside>
         </div>
       </div>
-    </div>
+    </header>
 
-    <div class="container">
-      <div class="course-details__layout">
-        <div class="course-details__main">
-          <app-breadcrumbs></app-breadcrumbs>
+    <section class="course-content" aria-label="معلومات الكورس">
+      <div class="container course-content__layout">
+        <article class="course-panel course-about">
+          <header class="course-panel__header">
+            <span class="course-panel__icon">
+              <i class="fa-solid fa-align-right" aria-hidden="true"></i>
+            </span>
+            <div>
+              <span>نبذة مختصرة</span>
+              <h2>عن الكورس</h2>
+            </div>
+          </header>
 
-          <!-- About -->
-          <div class="course-details__card course-details__description-card">
-            <div class="course-details__card-header">
-              <div class="course-details__header-icon">
-                <i class="fa-solid fa-chalkboard-user"></i>
-              </div>
-              <div>
-                <h3>عن الدورة</h3>
-                <p>معلومات تفصيلية عن محتوى الدورة</p>
-              </div>
-            </div>
-            <div class="course-details__description">
-              <p>{{ course.description }}</p>
-            </div>
-          </div>
+          <p>{{ course.description }}</p>
+        </article>
 
-          <!-- What you'll learn -->
-          <div class="course-details__card course-details__learn-card">
-            <div class="course-details__card-header">
-              <div class="course-details__header-icon">
-                <i class="fa-solid fa-lightbulb"></i>
-              </div>
-              <div>
-                <h3>ماذا ستتعلم؟</h3>
-                <p>أهداف ومخرجات هذه الدورة</p>
-              </div>
+        <aside class="course-panel course-facts">
+          <header class="course-panel__header">
+            <span class="course-panel__icon">
+              <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+            </span>
+            <div>
+              <span>نظرة سريعة</span>
+              <h2>بيانات الكورس</h2>
             </div>
-            <div class="course-details__learn-grid">
-              <div class="course-details__learn-item">
-                <span class="course-details__learn-icon"><i class="fa-solid fa-check"></i></span>
-                <span>فهم أساسيات المادة وتطبيقاتها العملية</span>
-              </div>
-              <div class="course-details__learn-item">
-                <span class="course-details__learn-icon"><i class="fa-solid fa-check"></i></span>
-                <span>حل تمارين وأسئلة متنوعة بأساليب احترافية</span>
-              </div>
-              <div class="course-details__learn-item">
-                <span class="course-details__learn-icon"><i class="fa-solid fa-check"></i></span>
-                <span>الاستعداد للامتحانات بثقة وتركيز</span>
-              </div>
-              <div class="course-details__learn-item">
-                <span class="course-details__learn-icon"><i class="fa-solid fa-check"></i></span>
-                <span>متابعة مستمرة مع المدرس عبر المنصة</span>
-              </div>
-            </div>
-          </div>
+          </header>
 
-          <!-- Info Grid -->
-          <div class="course-details__info-grid">
-            <div class="course-details__info-card">
-              <div class="info-icon">
-                <i class="fa-solid fa-book"></i>
-              </div>
-              <div class="info-content">
-                <span class="info-label">المادة</span>
-                <strong class="info-value">{{ course.subject }}</strong>
-              </div>
+          <dl>
+            <div>
+              <dt><i class="fa-solid fa-book" aria-hidden="true"></i> المادة</dt>
+              <dd>{{ course.subject }}</dd>
             </div>
-            <div class="course-details__info-card">
-              <div class="info-icon">
-                <i class="fa-solid fa-graduation-cap"></i>
-              </div>
-              <div class="info-content">
-                <span class="info-label">المرحلة الدراسية</span>
-                <strong class="info-value">{{ course.grade }}</strong>
-              </div>
+            <div>
+              <dt><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> المرحلة</dt>
+              <dd>{{ course.grade }}</dd>
             </div>
-            <div class="course-details__info-card">
-              <div class="info-icon">
-                <i class="fa-solid fa-user-tie"></i>
-              </div>
-              <div class="info-content">
-                <span class="info-label">المدرس</span>
-                <strong class="info-value">{{ teacherName || 'غير معروف' }}</strong>
-              </div>
+            <div>
+              <dt><i class="fa-solid fa-user-tie" aria-hidden="true"></i> المدرس</dt>
+              <dd>{{ teacherName || 'مدرس الدورة' }}</dd>
             </div>
-          </div>
-        </div>
-
-        <!-- Sidebar -->
-        <aside class="course-details__sidebar">
-          <div class="course-details__price-card">
-            <div class="price-header">
-              <span class="price-label">سعر الدورة</span>
-              <div class="price-value">{{ course.price }} <span>جنيه</span></div>
-            </div>
-            <button type="button" class="course-details__subscribe">
-              <span class="subscribe-text">اشترك في الدورة</span>
-              <span class="subscribe-icon">
-                <i class="fa-solid fa-arrow-left"></i>
-              </span>
-            </button>
-            <div class="course-details__teacher-mini">
-              <div class="teacher-avatar">
-                <i class="fa-solid fa-chalkboard-user"></i>
-              </div>
-              <div>
-                <span class="teacher-label">مدرس الدورة</span>
-                <strong class="teacher-name">{{ teacherName || 'مدرس الدورة' }}</strong>
-              </div>
-            </div>
-          </div>
+          </dl>
         </aside>
       </div>
-    </div>
+    </section>
 
-    <!-- Mobile sticky CTA -->
-    <div class="course-details__mobile-cta">
-      <div class="course-details__mobile-price">
-        <span class="course-details__mobile-label">السعر</span>
-        <span class="course-details__mobile-value">{{ course.price }} جنيه</span>
+    <div class="mobile-enrollment">
+      <div>
+        <small>سعر الكورس</small>
+        <strong>{{ course.price }} جنيه</strong>
       </div>
-      <button type="button" class="course-details__subscribe course-details__subscribe--mobile">
-        <span class="subscribe-text">اشترك الآن</span>
-        <span class="subscribe-icon"><i class="fa-solid fa-arrow-left"></i></span>
-      </button>
+      <button type="button">اشترك الآن</button>
     </div>
-  </section>
-}
+  } @else if (courseNotFound) {
+    <div class="course-state">
+      <span class="course-state__icon">
+        <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+      </span>
+      <strong>الكورس غير موجود</strong>
+      <p>ممكن يكون الكورس اتحذف أو الرابط غير صحيح.</p>
+      <a routerLink="/all-courses">العودة لكل الكورسات</a>
+    </div>
+  }
+</main>

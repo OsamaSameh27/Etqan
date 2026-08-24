@@ -1,0 +1,170 @@
+<main class="courses-catalog" dir="rtl">
+  <section class="catalog-intro" aria-labelledby="catalog-title">
+    <div class="container">
+      <a routerLink="/" fragment="courses" class="catalog-intro__back">
+        <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+        العودة للرئيسية
+      </a>
+
+      <div class="catalog-intro__content">
+        <div>
+          <span class="catalog-intro__eyebrow">دورات إتقان</span>
+          <h1 id="catalog-title">اختار الكورس اللي يناسب هدفك</h1>
+          <p>
+            تصفّح الدورات المتاحة، قارن بين المواد والمراحل الدراسية، وابدأ مع المدرس
+            المناسب ليك.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="catalog-content" aria-label="قائمة جميع الكورسات">
+    <div class="container">
+      <div class="catalog-tools">
+        <div class="catalog-tools__top">
+          <label class="search-field">
+            <span class="visually-hidden">ابحث عن كورس أو مدرس</span>
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <input
+              type="search"
+              name="courseSearch"
+              placeholder="ابحث باسم الكورس أو المدرس..."
+              autocomplete="off"
+              [(ngModel)]="searchTerm"
+              (ngModelChange)="applyFilters()"
+            />
+          </label>
+
+          <label class="grade-field">
+            <span class="visually-hidden">المرحلة الدراسية</span>
+            <select
+              name="courseGrade"
+              [(ngModel)]="selectedGrade"
+              (ngModelChange)="applyFilters()"
+            >
+              <option value="الكل">كل المراحل</option>
+              @for (grade of grades; track grade) {
+                <option [value]="grade">{{ grade }}</option>
+              }
+            </select>
+          </label>
+        </div>
+
+        <div class="catalog-tools__subjects" aria-label="تصفية حسب المادة">
+          <span class="catalog-tools__label">المادة</span>
+
+          <div class="subject-chips">
+            <button
+              type="button"
+              class="subject-chip"
+              [class.subject-chip--active]="selectedSubject === 'الكل'"
+              [attr.aria-pressed]="selectedSubject === 'الكل'"
+              (click)="selectSubject('الكل')"
+            >
+              الكل
+            </button>
+
+            @for (subject of subjects; track subject) {
+              <button
+                type="button"
+                class="subject-chip"
+                [class.subject-chip--active]="selectedSubject === subject"
+                [attr.aria-pressed]="selectedSubject === subject"
+                (click)="selectSubject(subject)"
+              >
+                {{ subject }}
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+
+      @if (isLoading) {
+        <div class="catalog-status catalog-status--loading" role="status" aria-live="polite">
+          <span class="catalog-loader" aria-hidden="true"></span>
+          <strong>بنجهز لك الكورسات...</strong>
+          <span>لحظات وهتظهر كل الدورات المتاحة</span>
+        </div>
+      } @else if (errorMessage) {
+        <div class="catalog-status" role="alert">
+          <span class="catalog-status__icon catalog-status__icon--error">
+            <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+          </span>
+          <strong>{{ errorMessage }}</strong>
+          <button type="button" class="catalog-status__action" (click)="loadCourses()">
+            حاول مرة أخرى
+          </button>
+        </div>
+      } @else {
+        <div class="catalog-results">
+          <p class="catalog-results__count" aria-live="polite">
+            <strong>{{ filteredCourses.length }}</strong>
+            {{ filteredCourses.length === 1 ? 'كورس مناسب' : 'كورسات مناسبة' }}
+          </p>
+
+          @if (hasActiveFilters) {
+            <button type="button" class="catalog-results__clear" (click)="clearFilters()">
+              <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+              مسح الفلاتر
+            </button>
+          }
+        </div>
+
+        @if (filteredCourses.length) {
+          <div class="courses-grid">
+            @for (course of filteredCourses; track course.id) {
+              <article class="course-card">
+                <div class="course-card__top">
+                  <div class="course-card__tags">
+                    <span>{{ course.subject }}</span>
+                    <span>{{ course.grade }}</span>
+                  </div>
+                </div>
+
+                <div class="course-card__body">
+                  <h2>{{ course.title }}</h2>
+                  <p class="course-card__description">{{ course.description }}</p>
+
+                  <div class="course-card__teacher">
+                    <span class="course-card__teacher-icon">
+                      <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i>
+                    </span>
+                    <div>
+                      <span>مقدّم الكورس</span>
+                      <strong>{{ teacherNames[course.teacherId] || 'مدرس الدورة' }}</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="course-card__footer">
+                  <div class="course-card__price">
+                    <span>سعر الكورس</span>
+                    <strong>{{ course.price }} <small>جنيه</small></strong>
+                  </div>
+
+                  <a [routerLink]="['/course-details', course.id]" class="course-card__link">
+                    عرض التفاصيل
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                  </a>
+                </div>
+              </article>
+            }
+          </div>
+        } @else {
+          <div class="catalog-status">
+            <span class="catalog-status__icon">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </span>
+            <strong>ملقيناش كورسات بنفس الاختيارات</strong>
+            <span>جرّب تغيّر كلمة البحث أو اختار مادة ومرحلة مختلفة.</span>
+            <button type="button" class="catalog-status__action" (click)="clearFilters()">
+              عرض كل الكورسات
+            </button>
+          </div>
+        }
+      }
+    </div>
+  </section>
+</main>

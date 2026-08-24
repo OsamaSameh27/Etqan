@@ -22,7 +22,17 @@ export class BreadcrumbsServise {
   }
 
   private updateBreadcrumbs(): void {
-    const segments = this.router.url.split('?')[0].split('/').filter(Boolean);
+    const currentPath = this.router.url.split('?')[0].split('#')[0];
+    const segments = currentPath.split('/').filter(Boolean);
+
+    if (segments[0] === 'course-details') {
+      this.breadcrumbs.set([
+        { label: 'الرئيسية', url: '/' },
+        { label: 'كل الكورسات', url: '/all-courses' },
+        { label: 'تفاصيل الكورس', url: currentPath },
+      ]);
+      return;
+    }
 
     const breadcrumbs: Breadcrumb[] = [
       {
@@ -51,6 +61,7 @@ export class BreadcrumbsServise {
       teacher: 'المدرس',
       student: 'الطالب',
       courses: 'الكورسات',
+      'all-courses': 'كل الكورسات',
       'course-details': 'تفاصيل الكورس',
       profile: 'الملف الشخصي',
       login: 'تسجيل الدخول',
@@ -60,15 +71,15 @@ export class BreadcrumbsServise {
     return labels[segment] ?? segment;
   }
   setCourseName(name: string): void {
-    const current = this.breadcrumbs();
-
-    if (!current.length) return;
-
-    current[current.length - 1] = {
-      ...current[current.length - 1],
-      label: name,
-    };
-
-    this.breadcrumbs.set([...current]);
+    this.breadcrumbs.update((items) =>
+      items.map((item, index) =>
+        index === items.length - 1
+          ? {
+              ...item,
+              label: name,
+            }
+          : item,
+      ),
+    );
   }
 }
