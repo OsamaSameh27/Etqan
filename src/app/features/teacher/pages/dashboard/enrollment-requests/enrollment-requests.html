@@ -1,0 +1,188 @@
+<main class="teacher-requests" dir="rtl">
+  <div class="teacher-requests__container">
+    <header class="page-heading">
+      <div>
+        <span>إدارة المدفوعات والاشتراكات</span>
+        <h1>طلبات اشتراك الطلاب</h1>
+        <p>راجع إيصالات التحويل قبل قبول الطالب في المجموعة.</p>
+      </div>
+      @if (countByStatus('pending')) {
+        <div class="pending-alert">
+          <i class="fa-regular fa-bell"></i>
+          <strong>{{ countByStatus('pending') }}</strong>
+          طلب بانتظارك
+        </div>
+      }
+    </header>
+
+    <section class="summary-grid" aria-label="ملخص الطلبات">
+      <article>
+        <span class="summary-icon"><i class="fa-solid fa-inbox"></i></span>
+        <div><small>إجمالي الطلبات</small><strong>{{ requests.length }}</strong></div>
+      </article>
+      <article>
+        <span class="summary-icon summary-icon--pending"><i class="fa-regular fa-clock"></i></span>
+        <div><small>تحتاج مراجعة</small><strong>{{ countByStatus('pending') }}</strong></div>
+      </article>
+      <article>
+        <span class="summary-icon summary-icon--approved"><i class="fa-solid fa-user-check"></i></span>
+        <div><small>تم قبولها</small><strong>{{ countByStatus('approved') }}</strong></div>
+      </article>
+      <article>
+        <span class="summary-icon summary-icon--rejected"><i class="fa-solid fa-user-xmark"></i></span>
+        <div><small>تم رفضها</small><strong>{{ countByStatus('rejected') }}</strong></div>
+      </article>
+    </section>
+
+    <nav class="requests-tabs" aria-label="فلترة الطلبات">
+      <button type="button" [class.active]="activeFilter === 'pending'" (click)="setFilter('pending')">
+        قيد المراجعة <span>{{ countByStatus('pending') }}</span>
+      </button>
+      <button type="button" [class.active]="activeFilter === 'approved'" (click)="setFilter('approved')">
+        المقبولة <span>{{ countByStatus('approved') }}</span>
+      </button>
+      <button type="button" [class.active]="activeFilter === 'rejected'" (click)="setFilter('rejected')">
+        المرفوضة <span>{{ countByStatus('rejected') }}</span>
+      </button>
+      <button type="button" [class.active]="activeFilter === 'all'" (click)="setFilter('all')">
+        الكل <span>{{ requests.length }}</span>
+      </button>
+    </nav>
+
+    @if (isLoading) {
+      <section class="requests-state" role="status">
+        <span class="state-loader"></span>
+        <strong>جاري تحميل طلبات الطلاب...</strong>
+      </section>
+    } @else if (loadFailed) {
+      <section class="requests-state requests-state--error">
+        <span><i class="fa-solid fa-triangle-exclamation"></i></span>
+        <strong>تعذر تحميل الطلبات</strong>
+        <p>تأكد من الاتصال وصلاحيات Firestore ثم حاول مرة أخرى.</p>
+      </section>
+    } @else if (!requests.length) {
+      <section class="requests-state">
+        <span><i class="fa-regular fa-folder-open"></i></span>
+        <strong>لا توجد طلبات اشتراك حتى الآن</strong>
+        <p>أي طلب جديد من الطلاب هيظهر هنا تلقائيًا.</p>
+      </section>
+    } @else if (!filteredRequests.length) {
+      <section class="requests-state requests-state--compact">
+        <span><i class="fa-solid fa-filter-circle-xmark"></i></span>
+        <strong>لا توجد طلبات بهذه الحالة</strong>
+        <button type="button" (click)="setFilter('all')">عرض كل الطلبات</button>
+      </section>
+    } @else {
+      <section class="requests-list" aria-live="polite">
+        @for (request of filteredRequests; track request.id) {
+          <article class="teacher-request-card" [class]="'teacher-request-card teacher-request-card--' + request.status">
+            <header class="card-topbar">
+              <span class="status-pill">
+                @if (request.status === 'pending') {
+                  <i class="fa-regular fa-clock"></i>
+                } @else if (request.status === 'approved') {
+                  <i class="fa-solid fa-circle-check"></i>
+                } @else {
+                  <i class="fa-solid fa-circle-xmark"></i>
+                }
+                {{ statusLabel(request.status) }}
+              </span>
+              <small>أُرسل {{ requestDate(request) }}</small>
+            </header>
+
+            <div class="card-layout">
+              <section class="student-block">
+                <span class="student-avatar">{{ request.studentName.charAt(0) }}</span>
+                <div>
+                  <small>بيانات الطالب</small>
+                  <h2>{{ request.studentName }}</h2>
+                  <p><i class="fa-regular fa-envelope"></i> {{ request.studentEmail }}</p>
+                  <p dir="ltr"><i class="fa-solid fa-phone"></i> {{ request.studentPhone }}</p>
+                </div>
+              </section>
+
+              <section class="request-information">
+                <h3>{{ request.courseTitle }}</h3>
+                <dl>
+                  <div><dt><i class="fa-solid fa-users"></i> المجموعة</dt><dd>{{ request.groupName }}</dd></div>
+                  <div><dt><i class="fa-solid fa-money-bill-transfer"></i> التحويل</dt><dd>{{ paymentMethodLabel(request) }}</dd></div>
+                  <div><dt><i class="fa-solid fa-coins"></i> المبلغ</dt><dd>{{ request.amount }} جنيه</dd></div>
+                  <div>
+                    <dt><i class="fa-solid fa-chair"></i> الأماكن المتبقية</dt>
+                    <dd>
+                      @if (remainingPlaces(request) !== null) {
+                        {{ remainingPlaces(request) }} مكان
+                      } @else {
+                        جاري الحساب...
+                      }
+                    </dd>
+                  </div>
+                </dl>
+              </section>
+
+              <section class="receipt-block">
+                <div>
+                  <span><i class="fa-regular fa-image"></i></span>
+                  <div><small>إثبات التحويل</small><strong>صورة إيصال الدفع</strong></div>
+                </div>
+                <a [href]="request.receiptUrl" target="_blank" rel="noopener noreferrer">
+                  عرض الإيصال كاملًا
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+              </section>
+            </div>
+
+            @if (request.status === 'rejected') {
+              <p class="review-note review-note--rejected">
+                <i class="fa-solid fa-circle-info"></i>
+                سبب الرفض: {{ request.rejectionReason || 'لم يتم توضيح السبب.' }}
+              </p>
+            } @else if (request.status === 'approved') {
+              <p class="review-note review-note--approved">
+                <i class="fa-solid fa-user-check"></i>
+                تم إضافة الطالب إلى المجموعة وتأكيد اشتراكه.
+              </p>
+            }
+
+            @if (request.status === 'pending') {
+              @if (rejectingRequestId === request.id) {
+                <div class="reject-panel">
+                  <label for="rejection-{{ request.id }}">سبب الرفض <small>(اختياري)</small></label>
+                  <textarea
+                    id="rejection-{{ request.id }}"
+                    rows="3"
+                    maxlength="250"
+                    [(ngModel)]="rejectionReason"
+                    placeholder="مثال: صورة الإيصال غير واضحة أو المبلغ غير مطابق"
+                  ></textarea>
+                  <div>
+                    <button type="button" class="cancel-button" (click)="closeRejectForm()">إلغاء</button>
+                    <button type="button" class="confirm-reject" [disabled]="isProcessing(request)" (click)="rejectRequest(request)">
+                      {{ isProcessing(request) ? 'جاري الرفض...' : 'تأكيد الرفض' }}
+                    </button>
+                  </div>
+                </div>
+              } @else {
+                <footer class="review-actions">
+                  <p><i class="fa-solid fa-shield-halved"></i> راجع الإيصال قبل اتخاذ القرار.</p>
+                  <div>
+                    <button type="button" class="reject-button" [disabled]="!!processingRequestId" (click)="openRejectForm(request.id!)">
+                      <i class="fa-solid fa-xmark"></i> رفض
+                    </button>
+                    <button type="button" class="approve-button" [disabled]="!!processingRequestId" (click)="approveRequest(request)">
+                      @if (isProcessing(request)) {
+                        <span class="button-loader"></span> جاري القبول...
+                      } @else {
+                        <i class="fa-solid fa-check"></i> قبول الطالب
+                      }
+                    </button>
+                  </div>
+                </footer>
+              }
+            }
+          </article>
+        }
+      </section>
+    }
+  </div>
+</main>

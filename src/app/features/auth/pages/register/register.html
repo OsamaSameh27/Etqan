@@ -119,21 +119,41 @@
             @if (registerForm.controls.role.value === 'teacher') {
               <!-- Subject -->
               <div class="login__group">
-                <label>المادة</label>
+                <label for="teacherSubject">المادة المتخصص بها</label>
 
-                <div class="input-box">
+                <div
+                  class="input-box"
+                  [class.is-invalid]="
+                    registerForm.controls.subject.touched && registerForm.controls.subject.invalid
+                  "
+                >
                   <i class="fa-solid fa-book"></i>
 
-                  <input
-                    type="text"
+                  <select
+                    id="teacherSubject"
                     class="form-control"
-                    placeholder="مثال: الرياضيات"
                     formControlName="subject"
-                  />
+                  >
+                    <option value="" disabled>اختر المادة</option>
+                    @for (subject of secondarySubjects; track subject) {
+                      <option [value]="subject">{{ subject }}</option>
+                    }
+                  </select>
                 </div>
+
+                @if (
+                  registerForm.controls.subject.touched &&
+                  registerForm.controls.subject.errors?.['required']
+                ) {
+                  <p class="error-msg text-danger">
+                    <i class="fa-solid fa-circle-exclamation me-1"></i>
+                    اختر المادة المتخصص بها
+                  </p>
+                }
               </div>
               <!-- grade -->
               <div class="login__group">
+                <label>الصفوف التي تقوم بتدريسها</label>
                 <div class="grades-checkboxes">
                   <label class="grade-checkbox">
                     <input
@@ -168,6 +188,16 @@
                     <span>الثالث الثانوي</span>
                   </label>
                 </div>
+
+                @if (
+                  registerForm.controls.grades.touched &&
+                  registerForm.controls.grades.invalid
+                ) {
+                  <p class="error-msg text-danger">
+                    <i class="fa-solid fa-circle-exclamation me-1"></i>
+                    اختر صفًا دراسيًا واحدًا على الأقل
+                  </p>
+                }
               </div>
 
               <!-- Bio -->
@@ -203,18 +233,86 @@
                 </div>
               </div>
             }
-            <!-- Image -->
-            <div class="login__group">
-              <label>رابط الصورة</label>
 
-              <div class="input-box">
-                <i class="fa-solid fa-image"></i>
-                <input type="file" accept="image/*" (change)="onImageSelected($event)" />
+            @if (registerForm.controls.role.value === 'student') {
+              <!-- Student Grade -->
+              <div class="login__group">
+                <label for="studentGrade">الصف الدراسي</label>
+                <div
+                  class="input-box"
+                  [class.is-invalid]="
+                    registerForm.controls.studentGrade.touched &&
+                    registerForm.controls.studentGrade.invalid
+                  "
+                >
+                  <i class="fa-solid fa-graduation-cap"></i>
+                  <select
+                    id="studentGrade"
+                    class="form-control"
+                    formControlName="studentGrade"
+                    (change)="onStudentGradeChange()"
+                  >
+                    <option value="" disabled>اختر الصف الدراسي</option>
+                    <option value="الاول الثانوي">الأول الثانوي</option>
+                    <option value="الثاني الثانوي">الثاني الثانوي</option>
+                    <option value="الثالث الثانوي">الثالث الثانوي</option>
+                  </select>
+                </div>
+
+                @if (
+                  registerForm.controls.studentGrade.touched &&
+                  registerForm.controls.studentGrade.errors?.['required']
+                ) {
+                  <p class="error-msg text-danger">
+                    <i class="fa-solid fa-circle-exclamation me-1"></i>
+                    اختر الصف الدراسي
+                  </p>
+                }
               </div>
-              @if (imagePreview) {
-                <img [src]="imagePreview" alt="صورة المستخدم" width="120" />
+
+              @if (
+                registerForm.controls.studentGrade.value === 'الثاني الثانوي' ||
+                registerForm.controls.studentGrade.value === 'الثالث الثانوي'
+              ) {
+                <!-- Student Track -->
+                <div class="login__group">
+                  <label>الشعبة الدراسية</label>
+                  <div class="role-switch">
+                    <button
+                      type="button"
+                      class="role-option"
+                      [class.active]="registerForm.controls.studentTrack.value === 'علمي'"
+                      [attr.aria-pressed]="registerForm.controls.studentTrack.value === 'علمي'"
+                      (click)="selectStudentTrack('علمي')"
+                    >
+                      <i class="fa-solid fa-flask"></i>
+                      <span>علمي</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      class="role-option"
+                      [class.active]="registerForm.controls.studentTrack.value === 'أدبي'"
+                      [attr.aria-pressed]="registerForm.controls.studentTrack.value === 'أدبي'"
+                      (click)="selectStudentTrack('أدبي')"
+                    >
+                      <i class="fa-solid fa-landmark"></i>
+                      <span>أدبي</span>
+                    </button>
+                  </div>
+
+                  @if (
+                    registerForm.controls.studentTrack.touched &&
+                    registerForm.controls.studentTrack.errors?.['required']
+                  ) {
+                    <p class="error-msg text-danger">
+                      <i class="fa-solid fa-circle-exclamation me-1"></i>
+                      اختر الشعبة الدراسية
+                    </p>
+                  }
+                </div>
               }
-            </div>
+            }
 
             <!-- Phone -->
             <div class="login__group">
@@ -249,6 +347,86 @@
                   <i class="fa-solid fa-circle-exclamation me-1"></i> رقم الهاتف غير صحيح (11 رقم)
                 </p>
               }
+            </div>
+
+            @if (registerForm.controls.role.value === 'student') {
+              <!-- Guardian Phone -->
+              <div class="login__group">
+                <label for="guardianPhone">رقم هاتف ولي الأمر</label>
+                <div
+                  class="input-box"
+                  [class.is-invalid]="
+                    registerForm.controls.guardianPhone.touched &&
+                    registerForm.controls.guardianPhone.invalid
+                  "
+                >
+                  <i class="fa-solid fa-person-circle-check"></i>
+                  <input
+                    id="guardianPhone"
+                    type="tel"
+                    inputmode="numeric"
+                    maxlength="11"
+                    class="form-control"
+                    formControlName="guardianPhone"
+                    placeholder="01234567890"
+                  />
+                </div>
+
+                @if (
+                  registerForm.controls.guardianPhone.touched &&
+                  registerForm.controls.guardianPhone.errors?.['required']
+                ) {
+                  <p class="error-msg text-danger">
+                    <i class="fa-solid fa-circle-exclamation me-1"></i>
+                    رقم ولي الأمر مطلوب
+                  </p>
+                }
+
+                @if (
+                  registerForm.controls.guardianPhone.touched &&
+                  registerForm.controls.guardianPhone.errors?.['pattern']
+                ) {
+                  <p class="error-msg text-danger">
+                    <i class="fa-solid fa-circle-exclamation me-1"></i>
+                    رقم ولي الأمر يجب أن يكون 11 رقمًا
+                  </p>
+                }
+              </div>
+            }
+
+            <!-- Profile Image -->
+            <div class="login__group">
+              <label for="profileImage">الصورة الشخصية</label>
+
+              <div class="image-upload" [class.image-upload--selected]="selectedImage">
+                <input
+                  id="profileImage"
+                  class="image-upload__input"
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  (change)="onImageSelected($event)"
+                />
+
+                <label for="profileImage" class="image-upload__label">
+                  <span class="image-upload__preview">
+                    @if (imagePreview) {
+                      <img [src]="imagePreview" alt="معاينة الصورة الشخصية" />
+                    } @else {
+                      <i class="fa-solid fa-user" aria-hidden="true"></i>
+                    }
+                  </span>
+
+                  <span class="image-upload__copy">
+                    <strong>{{ selectedImage?.name || 'اختر صورة شخصية' }}</strong>
+                    <small>PNG أو JPG أو WebP</small>
+                  </span>
+
+                  <span class="image-upload__action">
+                    <i class="fa-solid fa-arrow-up-from-bracket" aria-hidden="true"></i>
+                    {{ selectedImage ? 'تغيير' : 'اختيار' }}
+                  </span>
+                </label>
+              </div>
             </div>
 
             <!-- Password -->

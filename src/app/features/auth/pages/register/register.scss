@@ -17,7 +17,6 @@
     filter: blur(80px);
     pointer-events: none;
     opacity: 0.9;
-    animation: blobFloat 22s ease-in-out infinite;
 
     &--1 {
       width: 320px;
@@ -33,17 +32,8 @@
       bottom: -80px;
       left: -80px;
       background: radial-gradient(circle, rgba($primary, 0.18), transparent 60%);
-      animation-duration: 28s;
     }
 
-    &--3 {
-      width: 220px;
-      height: 220px;
-      top: 40%;
-      left: -40px;
-      background: radial-gradient(circle, rgba($secondary, 0.15), transparent 60%);
-      animation-duration: 20s;
-    }
   }
 
   &__card {
@@ -101,7 +91,6 @@
       border-radius: 50%;
       background: $primary;
       box-shadow: 0 0 8px rgba($primary, 0.8);
-      animation: pulse 2s infinite;
     }
   }
 
@@ -131,15 +120,20 @@
   }
 
   .grades-checkboxes {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 0.4rem;
 
     .grade-checkbox {
+      position: relative;
       display: flex;
+      justify-content: center;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 0.75rem;
+      flex-direction: column;
+      gap: 0.35rem;
+      min-height: 72px;
+      margin-bottom: 0;
+      padding: 0.55rem 0.3rem;
       border: 1px solid $border-color;
       border-radius: $radius-md;
       background: rgba(255, 255, 255, 0.95);
@@ -147,10 +141,17 @@
       transition: $transition;
 
       input[type='checkbox'] {
-        width: 16px;
-        height: 16px;
+        position: absolute;
+        top: 7px;
+        right: 7px;
+        width: 14px;
+        height: 14px;
         accent-color: $primary;
         cursor: pointer;
+      }
+
+      i {
+        color: $primary;
       }
 
       span {
@@ -159,9 +160,10 @@
         font-weight: 500;
       }
 
-      &:hover {
-        border-color: rgba($primary, 0.5);
-        background: rgba($primary, 0.04);
+      &:has(input:checked) {
+        border-color: $primary;
+        background: rgba($primary, 0.08);
+        box-shadow: inset 0 0 0 1px rgba($primary, 0.15);
       }
     }
   }
@@ -234,7 +236,6 @@
       border-radius: 50%;
       background: radial-gradient(circle, rgba($secondary, 0.35), transparent 70%);
       filter: blur(40px);
-      animation: pulse-glow 4s infinite;
     }
     .hero-img {
       width: auto;
@@ -306,7 +307,7 @@
     position: absolute;
     right: 13px;
     z-index: 2;
-    color: rgba($text-light, 0.7);
+    color: rgba($primary,0.9);
     font-size: 0.9rem;
     transition: $transition;
   }
@@ -338,6 +339,70 @@
       border-color: #dc3545;
       color: #dc3545;
     }
+  }
+}
+
+.image-upload {
+  &__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+  }
+
+  &__label {
+    display: flex !important;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0 !important;
+    padding: 0.65rem;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px dashed $border-color;
+    border-radius: $radius-md;
+    cursor: pointer;
+  }
+
+  &__preview {
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    color: $primary;
+    background: rgba($secondary, 0.18);
+    border-radius: 50%;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__copy {
+    min-width: 0;
+    display: grid;
+    flex: 1;
+
+    strong {
+      color: $text-dark;
+      font-size: 0.78rem;
+    }
+
+    small {
+      color: $text-light;
+      font-size: 0.68rem;
+    }
+  }
+
+  &__action {
+    display: inline-flex;
+    align-items: center;
+    color: $primary;
+    font-size: 0.72rem;
+    font-weight: 700;
   }
 }
 
@@ -414,15 +479,9 @@
   color: $text-dark;
   font-size: 0.78rem;
   font-weight: 700;
-  animation: chipFloat 5s ease-in-out infinite;
 
   i {
     color: $primary;
-  }
-
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
   }
 
   &.chip-top-right {
@@ -438,60 +497,6 @@
   &.chip-top-left {
     top: 25%;
     left: -20px;
-  }
-}
-
-/* Animations */
-
-@keyframes blobFloat {
-  0%,
-  100% {
-    transform: translate(0) scale(1);
-  }
-  50% {
-    transform: translate(-10px, 20px) scale(1.03);
-  }
-}
-
-@keyframes pulse-glow {
-  0%,
-  100% {
-    opacity: 0.8;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.08);
-  }
-}
-
-@keyframes chipFloat {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
-}
-
-@keyframes floatStudent {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-12px);
-  }
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 8px rgba($primary, 0.8);
-  }
-  50% {
-    box-shadow: 0 0 16px rgba($primary, 1);
   }
 }
 

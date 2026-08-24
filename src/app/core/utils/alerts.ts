@@ -43,4 +43,23 @@ export class Alerts {
 
     return result.isConfirmed;
   }
+
+  static async confirmAction(title: string, text: string, confirmButtonText = 'تأكيد') {
+    const result = await Swal.fire({
+      icon: 'question',
+      title,
+      text,
+      showCancelButton: true,
+      confirmButtonText,
+      cancelButtonText: 'إلغاء',
+      confirmButtonColor: '#8B5E3C',
+      cancelButtonColor: '#6c757d',
+      reverseButtons: true,
+      customClass: {
+        container: 'my-swal-container',
+      },
+    });
+
+    return result.isConfirmed;
+  }
 }

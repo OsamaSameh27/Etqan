@@ -1,0 +1,151 @@
+<main class="requests-page" dir="rtl">
+  <div class="requests-container">
+    <header class="requests-heading">
+      <div>
+        <span>متابعة الاشتراكات</span>
+        <h1>طلبات الاشتراك</h1>
+        <p>تابع حالة طلباتك وإيصالات التحويل من مكان واحد.</p>
+      </div>
+      <a routerLink="/all-courses" class="browse-courses">
+        تصفح كورسات جديدة
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
+    </header>
+
+    <section class="request-stats" aria-label="إحصائيات الطلبات">
+      <article>
+        <span class="stat-icon stat-icon--all"><i class="fa-solid fa-layer-group"></i></span>
+        <div><small>كل الطلبات</small><strong>{{ requests.length }}</strong></div>
+      </article>
+      <article>
+        <span class="stat-icon stat-icon--pending"><i class="fa-regular fa-clock"></i></span>
+        <div><small>قيد المراجعة</small><strong>{{ countByStatus('pending') }}</strong></div>
+      </article>
+      <article>
+        <span class="stat-icon stat-icon--approved"><i class="fa-solid fa-check"></i></span>
+        <div><small>تم قبولها</small><strong>{{ countByStatus('approved') }}</strong></div>
+      </article>
+      <article>
+        <span class="stat-icon stat-icon--rejected"><i class="fa-solid fa-xmark"></i></span>
+        <div><small>مرفوضة</small><strong>{{ countByStatus('rejected') }}</strong></div>
+      </article>
+    </section>
+
+    <nav class="request-filters" aria-label="فلترة الطلبات">
+      <button type="button" [class.active]="activeFilter === 'all'" (click)="setFilter('all')">
+        الكل <span>{{ requests.length }}</span>
+      </button>
+      <button type="button" [class.active]="activeFilter === 'pending'" (click)="setFilter('pending')">
+        قيد المراجعة <span>{{ countByStatus('pending') }}</span>
+      </button>
+      <button type="button" [class.active]="activeFilter === 'approved'" (click)="setFilter('approved')">
+        المقبولة <span>{{ countByStatus('approved') }}</span>
+      </button>
+      <button type="button" [class.active]="activeFilter === 'rejected'" (click)="setFilter('rejected')">
+        المرفوضة <span>{{ countByStatus('rejected') }}</span>
+      </button>
+    </nav>
+
+    @if (isLoading) {
+      <section class="requests-state" role="status">
+        <span class="requests-loader"></span>
+        <strong>جاري تحميل طلباتك...</strong>
+      </section>
+    } @else if (loadFailed) {
+      <section class="requests-state requests-state--error">
+        <span><i class="fa-solid fa-triangle-exclamation"></i></span>
+        <strong>تعذر تحميل الطلبات</strong>
+        <p>تأكد من اتصال الإنترنت وحاول فتح الصفحة مرة أخرى.</p>
+      </section>
+    } @else if (!requests.length) {
+      <section class="requests-state">
+        <span><i class="fa-regular fa-folder-open"></i></span>
+        <strong>لم ترسل طلبات اشتراك حتى الآن</strong>
+        <p>اختار الكورس والمجموعة المناسبة، وبعد التحويل ارفع إيصال الدفع.</p>
+        <a routerLink="/all-courses">تصفح كل الكورسات</a>
+      </section>
+    } @else if (!filteredRequests.length) {
+      <section class="requests-state requests-state--compact">
+        <span><i class="fa-solid fa-filter-circle-xmark"></i></span>
+        <strong>لا توجد طلبات بهذه الحالة</strong>
+        <button type="button" (click)="setFilter('all')">عرض كل الطلبات</button>
+      </section>
+    } @else {
+      <section class="requests-grid" aria-live="polite">
+        @for (request of filteredRequests; track request.id) {
+          <article class="request-card" [class]="'request-card request-card--' + request.status">
+            <header class="request-card__header">
+              <span class="request-status">
+                @if (request.status === 'pending') {
+                  <i class="fa-regular fa-clock"></i>
+                } @else if (request.status === 'approved') {
+                  <i class="fa-solid fa-circle-check"></i>
+                } @else {
+                  <i class="fa-solid fa-circle-xmark"></i>
+                }
+                {{ statusLabel(request.status) }}
+              </span>
+              <small>{{ requestDate(request) }}</small>
+            </header>
+
+            <div class="request-card__title">
+              <span><i class="fa-solid fa-book-open"></i></span>
+              <div>
+                <h2>{{ request.courseTitle }}</h2>
+                <p><i class="fa-solid fa-chalkboard-user"></i> {{ request.teacherName || 'مدرس الكورس' }}</p>
+              </div>
+            </div>
+
+            <dl class="request-details">
+              <div>
+                <dt><i class="fa-solid fa-users"></i> المجموعة</dt>
+                <dd>{{ request.groupName }}</dd>
+              </div>
+              <div>
+                <dt><i class="fa-solid fa-money-bill-transfer"></i> طريقة الدفع</dt>
+                <dd>{{ paymentMethodLabel(request) }}</dd>
+              </div>
+              <div>
+                <dt><i class="fa-solid fa-coins"></i> المبلغ</dt>
+                <dd>{{ request.amount }} جنيه</dd>
+              </div>
+            </dl>
+
+            @if (request.status === 'pending') {
+              <p class="status-note status-note--pending">
+                <i class="fa-solid fa-circle-info"></i>
+                المدرس بيراجع بيانات التحويل، وهتتحدث الحالة تلقائيًا.
+              </p>
+            } @else if (request.status === 'approved') {
+              <p class="status-note status-note--approved">
+                <i class="fa-solid fa-check"></i>
+                تم تأكيد الدفع وقبولك في المجموعة.
+              </p>
+            } @else {
+              <p class="status-note status-note--rejected">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                {{ request.rejectionReason || 'راجع بيانات التحويل ثم أعد إرسال الطلب.' }}
+              </p>
+            }
+
+            <footer class="request-card__footer">
+              <a [href]="request.receiptUrl" target="_blank" rel="noopener noreferrer" class="receipt-link">
+                <i class="fa-regular fa-image"></i>
+                عرض إيصال التحويل
+              </a>
+
+              @if (request.status === 'approved') {
+                <a routerLink="/dashboard/student/my-courses" class="request-action">الذهاب لدوراتي</a>
+              } @else if (request.status === 'rejected') {
+                <a
+                  [routerLink]="['/dashboard/student/enroll', request.courseId, request.groupId]"
+                  class="request-action"
+                >إعادة إرسال الطلب</a>
+              }
+            </footer>
+          </article>
+        }
+      </section>
+    }
+  </div>
+</main>

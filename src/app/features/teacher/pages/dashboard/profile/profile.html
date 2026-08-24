@@ -1,172 +1,222 @@
-<div class="profile-page">
+<section class="profile-page" dir="rtl">
   <div class="container-fluid">
-    <div class="profile-header">
-      <h2 class="page-title">الملف الشخصي</h2>
-      <p class="page-subtitle">إدارة بياناتك الشخصية ومعلومات حسابك</p>
-    </div>
+    <header class="profile-heading">
+      <div>
+        <span class="profile-heading__eyebrow">حساب المدرس</span>
+        <h1>الملف الشخصي</h1>
+        <p>اعرض بياناتك المهنية وحدّث معلومات التواصل والنبذة التعريفية.</p>
+      </div>
+    </header>
 
-    @if (user) {
+    @if (isLoading) {
+      <div class="profile-state" role="status">
+        <span class="profile-loader" aria-hidden="true"></span>
+        <strong>جاري تحميل بياناتك...</strong>
+      </div>
+    } @else if (user) {
       <div class="profile-layout">
-        <!-- البطاقة الجانبية -->
-        <div class="profile-sidebar">
+        <aside class="identity-card">
+          <div class="identity-card__accent"></div>
+
           <div class="profile-avatar">
-            @if (!user.image) {
-              <i class="fas fa-user"></i>
+            @if (profileImage) {
+              <img [src]="profileImage" [alt]="user.name" />
             } @else {
-              <img [src]="user.image" [alt]="user.name" />
+              <span>{{ user.name.charAt(0) }}</span>
             }
           </div>
-          <h3 class="sidebar-name m-3">{{ user.name }}</h3>
-          <span class="sidebar-badge">
-            {{ user.role === 'teacher' ? 'مدرس' : 'طالب' }}
+
+          <h2>{{ user.name }}</h2>
+          <span class="role-badge">
+            <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i>
+            مدرس {{ user.subject || '' }}
           </span>
-          <div class="sidebar-stats">
-            <div class="stat-item">
-              <span class="stat-value">{{ courses.length }}</span>
-              <span class="stat-label">عدد الكورسات</span>
+
+          <div class="identity-stats">
+            <div>
+              <strong>{{ courses.length }}</strong>
+              <span>الكورسات</span>
             </div>
-            <div class="stat-item">
-              <span class="stat-value">{{ groups.length }}</span>
-              <span class="stat-label">عدد المجموعات</span>
+            <div>
+              <strong>{{ groups.length }}</strong>
+              <span>المجموعات</span>
             </div>
           </div>
-        </div>
 
-        <!-- المحتوى الرئيسي -->
-        <div class="profile-content">
-          <div class="profile-card personal-card">
-            <div class="card-header">
-              <div class="header-icon">
-                <i class="fas fa-id-card"></i>
-              </div>
+          <p class="identity-note">
+            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+            بياناتك المهنية تظهر للطلاب عند تصفح الكورسات.
+          </p>
+        </aside>
+
+        <main class="profile-card">
+          <header class="profile-card__header">
+            <div class="section-title">
+              <span class="section-title__icon">
+                <i class="fa-solid fa-address-card" aria-hidden="true"></i>
+              </span>
               <div>
-                <h4>البيانات الشخصية</h4>
-                <p>معلومات حسابك الأساسية</p>
+                <span>بيانات الحساب</span>
+                <h2>المعلومات الشخصية والمهنية</h2>
               </div>
             </div>
 
             @if (!isEditing) {
-              <button class="btn btn-primary-custom" type="button" (click)="startEditing()">
-                <i class="fas fa-edit me-2"></i>
+              <button type="button" class="edit-button" (click)="startEditing()">
+                <i class="fa-solid fa-pen" aria-hidden="true"></i>
                 تعديل البيانات
               </button>
             }
+          </header>
 
-            <div class="profile-form">
-              <div class="info-row">
-                <!-- الاسم -->
-                <div class="info-item">
-                  <span class="info-label">الاسم</span>
+          @if (isEditing) {
+            <label class="avatar-upload">
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                (change)="onImageSelected($event)"
+              />
+              <span class="avatar-upload__preview">
+                @if (profileImage) {
+                  <img [src]="profileImage" alt="معاينة الصورة الشخصية" />
+                } @else {
+                  <i class="fa-solid fa-user" aria-hidden="true"></i>
+                }
+              </span>
+              <span class="avatar-upload__copy">
+                <strong>{{ selectedImage?.name || 'تغيير الصورة الشخصية' }}</strong>
+                <small>JPG أو PNG أو WebP — بحد أقصى 5MB</small>
+              </span>
+              <span class="avatar-upload__action">اختيار صورة</span>
+            </label>
+          }
 
-                  @if (isEditing) {
-                    <input
-                      id="schedule"
-                      type="text"
-                      class="form-input"
-                      [(ngModel)]="editData.name"
-                    />
-                  } @else {
-                    <span class="info-value">
-                      {{ user.name }}
-                    </span>
-                  }
-                </div>
-
-                <!-- الإيميل -->
-                <div class="info-item">
-                  <span class="info-label">البريد الإلكتروني</span>
-
-                  <span class="info-value">
-                    {{ user.email }}
-                  </span>
-                </div>
-
-                <!-- الهاتف -->
-                <div class="info-item">
-                  <span class="info-label">رقم الهاتف</span>
-
-                  @if (isEditing) {
-                    <input
-                      id="schedule"
-                      type="text"
-                      class="form-input"
-                      [(ngModel)]="editData.phone"
-                    />
-                  } @else {
-                    <span class="info-value">
-                      {{ user.phone || 'غير مضاف' }}
-                    </span>
-                  }
-                </div>
-                <div class="info-item">
-                  <span class="info-label"> سنوات الخبره</span>
-
-                  @if (isEditing) {
-                    <input
-                      id="schedule"
-                      type="text"
-                      class="form-input"
-                      [(ngModel)]="editData.experienceYears"
-                    />
-                  } @else {
-                    <span class="info-value">
-                      {{ user.experienceYears }}
-                    </span>
-                  }
-                </div>
-
-                <!-- نوع الحساب -->
-                <div class="info-item">
-                  <span class="info-label">نوع الحساب</span>
-
-                  <span class="info-value">
-                    {{ user.role === 'teacher' ? 'مدرس' : 'طالب' }}
-                  </span>
-                </div>
-                <div class="info-item">
-                  <span class="info-label">الصوره الشخصيه</span>
-
-                  @if (isEditing) {
-                    <input
-                      type="file"
-                      class="form-input"
-                      accept="image/png,image/jpeg,image/webp"
-                      (change)="onImageSelected($event)"
-                    />
-
-                    @if (imagePreview) {
-                      <img
-                        [src]="imagePreview"
-                        alt="معاينة الصورة الشخصية"
-                        width="120"
-                        height="120"
-                      />
-                    }
-                  } @else {
-                    @if (user.image) {
-                      <img [src]="user.image" [alt]="user.name" width="120" height="120" />
-                    } @else {
-                      <span class="info-value">لا توجد صورة</span>
-                    }
-                  }
-                </div>
-              </div>
-
+          <div class="details-grid">
+            <div class="detail-item">
+              <span class="detail-item__label">
+                <i class="fa-solid fa-user" aria-hidden="true"></i>
+                الاسم الكامل
+              </span>
               @if (isEditing) {
-                <div class="form-actions">
-                  <button type="button" class="btn btn-primary-custom" (click)="saveChanges()">
-                    حفظ التعديلات
-                  </button>
+                <input type="text" class="profile-input" [(ngModel)]="editData.name" />
+              } @else {
+                <strong>{{ user.name }}</strong>
+              }
+            </div>
 
-                  <button type="button" class="btn btn-light" (click)="isEditing = false">
-                    إلغاء
-                  </button>
-                </div>
+            <div class="detail-item">
+              <span class="detail-item__label">
+                <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                البريد الإلكتروني
+              </span>
+              <strong>{{ user.email }}</strong>
+              <small class="locked-value">
+                <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                لا يمكن تعديله من هنا
+              </small>
+            </div>
+
+            <div class="detail-item">
+              <span class="detail-item__label">
+                <i class="fa-solid fa-phone" aria-hidden="true"></i>
+                رقم الهاتف
+              </span>
+              @if (isEditing) {
+                <input
+                  type="tel"
+                  inputmode="numeric"
+                  maxlength="11"
+                  class="profile-input"
+                  [(ngModel)]="editData.phone"
+                />
+              } @else {
+                <strong>{{ user.phone }}</strong>
+              }
+            </div>
+
+            <div class="detail-item">
+              <span class="detail-item__label">
+                <i class="fa-solid fa-book" aria-hidden="true"></i>
+                المادة
+              </span>
+              <strong>{{ user.subject || 'غير محددة' }}</strong>
+            </div>
+
+            <div class="detail-item">
+              <span class="detail-item__label">
+                <i class="fa-solid fa-briefcase" aria-hidden="true"></i>
+                سنوات الخبرة
+              </span>
+              @if (isEditing) {
+                <input
+                  type="number"
+                  min="0"
+                  class="profile-input"
+                  [(ngModel)]="editData.experienceYears"
+                />
+              } @else {
+                <strong>{{ user.experienceYears || 0 }} سنوات</strong>
+              }
+            </div>
+
+            <div class="detail-item">
+              <span class="detail-item__label">
+                <i class="fa-solid fa-school" aria-hidden="true"></i>
+                الصفوف الدراسية
+              </span>
+              <strong>{{ gradesLabel }}</strong>
+            </div>
+
+            <div class="detail-item detail-item--wide">
+              <span class="detail-item__label">
+                <i class="fa-solid fa-align-right" aria-hidden="true"></i>
+                النبذة التعريفية
+              </span>
+              @if (isEditing) {
+                <textarea
+                  rows="5"
+                  class="profile-input profile-input--textarea"
+                  [(ngModel)]="editData.bio"
+                ></textarea>
+              } @else {
+                <strong class="bio-text">{{ user.bio || 'لم تتم إضافة نبذة تعريفية.' }}</strong>
               }
             </div>
           </div>
-        </div>
+
+          @if (isEditing) {
+            <footer class="form-actions">
+              <button
+                type="button"
+                class="save-button"
+                [disabled]="isSaving"
+                (click)="saveChanges()"
+              >
+                @if (isSaving) {
+                  <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+                  جاري الحفظ...
+                } @else {
+                  <i class="fa-solid fa-check" aria-hidden="true"></i>
+                  حفظ التعديلات
+                }
+              </button>
+              <button
+                type="button"
+                class="cancel-button"
+                [disabled]="isSaving"
+                (click)="cancelEditing()"
+              >
+                إلغاء
+              </button>
+            </footer>
+          }
+        </main>
+      </div>
+    } @else {
+      <div class="profile-state">
+        <i class="fa-solid fa-user-slash" aria-hidden="true"></i>
+        <strong>تعذر العثور على بيانات الحساب</strong>
       </div>
     }
   </div>
-</div>
+</section>

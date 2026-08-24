@@ -1,0 +1,238 @@
+<main class="checkout-page" dir="rtl">
+  @if (isLoading) {
+    <div class="checkout-state" role="status">
+      <span class="checkout-loader" aria-hidden="true"></span>
+      <strong>جاري تجهيز بيانات الاشتراك...</strong>
+    </div>
+  } @else if (dataNotFound || !course || !group || !student || !teacher) {
+    <div class="checkout-state">
+      <span class="checkout-state__icon"><i class="fa-solid fa-link-slash"></i></span>
+      <h1>بيانات الاشتراك غير مكتملة</h1>
+      <p>الكورس أو المجموعة المختارة غير متاحة حاليًا.</p>
+      <a routerLink="/all-courses">العودة لكل الكورسات</a>
+    </div>
+  } @else {
+    <div class="checkout-container">
+      <header class="checkout-heading">
+        <div>
+          <a [routerLink]="['/course-details', course.id]" class="back-link">
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+            الرجوع لتفاصيل الكورس
+          </a>
+          <span class="checkout-heading__eyebrow">الخطوة الأخيرة قبل إرسال الطلب</span>
+          <h1>تأكيد الاشتراك والدفع</h1>
+          <p>راجع بياناتك، حوّل قيمة الكورس، وبعدها ارفع صورة الإيصال.</p>
+        </div>
+        <span class="secure-badge">
+          <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+          بياناتك محفوظة
+        </span>
+      </header>
+
+      @if (existingRequest?.status === 'pending') {
+        <div class="request-banner request-banner--pending">
+          <span><i class="fa-regular fa-clock"></i></span>
+          <div>
+            <strong>طلب اشتراكك قيد المراجعة</strong>
+            <p>تم إرسال الطلب للمدرس، ومش محتاج تبعت طلب جديد لنفس الكورس.</p>
+          </div>
+        </div>
+      } @else if (existingRequest?.status === 'approved') {
+        <div class="request-banner request-banner--approved">
+          <span><i class="fa-solid fa-circle-check"></i></span>
+          <div>
+            <strong>تم قبول اشتراكك في الكورس</strong>
+            <p>أنت مشترك بالفعل، وهتظهر بيانات الكورس في دوراتك.</p>
+          </div>
+        </div>
+      } @else if (existingRequest?.status === 'rejected') {
+        <div class="request-banner request-banner--rejected">
+          <span><i class="fa-solid fa-rotate-right"></i></span>
+          <div>
+            <strong>يمكنك إعادة إرسال الطلب</strong>
+            <p>{{ existingRequest?.rejectionReason || 'راجع بيانات التحويل وارفع إيصالًا جديدًا.' }}</p>
+          </div>
+        </div>
+      }
+
+      <div class="checkout-layout">
+        <form class="checkout-form" [formGroup]="checkoutForm" (ngSubmit)="prepareEnrollment()">
+          <section class="checkout-card">
+            <header class="card-heading">
+              <span>01</span>
+              <div>
+                <h2>بيانات الطالب</h2>
+                <p>البيانات مسحوبة تلقائيًا من حسابك.</p>
+              </div>
+            </header>
+
+            <div class="fields-grid">
+              <label class="field">
+                <span>الاسم الكامل</span>
+                <span class="input-wrap">
+                  <i class="fa-regular fa-user" aria-hidden="true"></i>
+                  <input type="text" formControlName="name" />
+                </span>
+              </label>
+              <label class="field">
+                <span>البريد الإلكتروني</span>
+                <span class="input-wrap">
+                  <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+                  <input type="email" formControlName="email" />
+                </span>
+              </label>
+              <label class="field fields-grid__wide">
+                <span>رقم الهاتف</span>
+                <span class="input-wrap">
+                  <i class="fa-solid fa-phone" aria-hidden="true"></i>
+                  <input type="tel" formControlName="phone" dir="ltr" />
+                </span>
+              </label>
+            </div>
+          </section>
+
+          <section class="checkout-card">
+            <header class="card-heading">
+              <span>02</span>
+              <div>
+                <h2>طريقة التحويل</h2>
+                <p>اختار الطريقة المناسبة وحوّل المبلغ لرقم المدرس.</p>
+              </div>
+            </header>
+
+            <div class="payment-options">
+              <label class="payment-option" [class.payment-option--active]="selectedPaymentMethod === 'cash-wallet'">
+                <input type="radio" value="cash-wallet" formControlName="paymentMethod" />
+                <span class="payment-option__icon"><i class="fa-solid fa-wallet"></i></span>
+                <span>
+                  <strong>محفظة كاش</strong>
+                  <small>التحويل من أي محفظة إلكترونية</small>
+                </span>
+                <i class="fa-solid fa-circle-check payment-option__check"></i>
+              </label>
+
+              <label class="payment-option" [class.payment-option--active]="selectedPaymentMethod === 'instapay'">
+                <input type="radio" value="instapay" formControlName="paymentMethod" />
+                <span class="payment-option__icon"><i class="fa-solid fa-bolt"></i></span>
+                <span>
+                  <strong>InstaPay</strong>
+                  <small>تحويل لحظي باستخدام رقم الهاتف</small>
+                </span>
+                <i class="fa-solid fa-circle-check payment-option__check"></i>
+              </label>
+            </div>
+
+            <div class="payment-number">
+              <div>
+                <span>حوّل إلى رقم المدرس</span>
+                <strong dir="ltr">{{ paymentNumber }}</strong>
+                <small>{{ teacher.name }} · {{ selectedPaymentMethod === 'instapay' ? 'InstaPay' : 'محفظة كاش' }}</small>
+              </div>
+              <button type="button" (click)="copyPaymentNumber()">
+                <i [class]="copiedPaymentNumber ? 'fa-solid fa-check' : 'fa-regular fa-copy'"></i>
+                {{ copiedPaymentNumber ? 'تم النسخ' : 'نسخ الرقم' }}
+              </button>
+            </div>
+          </section>
+
+          <section class="checkout-card">
+            <header class="card-heading">
+              <span>03</span>
+              <div>
+                <h2>صورة إيصال التحويل</h2>
+                <p>تأكد إن المبلغ ورقم العملية واضحين في الصورة.</p>
+              </div>
+            </header>
+
+            <input
+              #receiptInput
+              id="payment-receipt"
+              class="receipt-input"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              [disabled]="requestBlocksSubmission || isSubmitting"
+              (change)="onReceiptSelected($event)"
+            />
+
+            @if (receiptPreview) {
+              <div class="receipt-preview">
+                <img [src]="receiptPreview" alt="معاينة إيصال التحويل" />
+                <div>
+                  <strong>{{ selectedReceipt?.name || 'إيصال التحويل' }}</strong>
+                  <small>{{ requestBlocksSubmission ? 'تم إرفاق الصورة مع الطلب' : 'الصورة جاهزة للرفع مع الطلب' }}</small>
+                </div>
+                @if (!requestBlocksSubmission) {
+                  <button type="button" (click)="removeReceipt(receiptInput)" aria-label="حذف صورة الإيصال">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                }
+              </div>
+            } @else {
+              <label class="receipt-upload" for="payment-receipt">
+                <span><i class="fa-solid fa-cloud-arrow-up"></i></span>
+                <strong>اضغط لاختيار صورة التحويل</strong>
+                <small>JPG أو PNG أو WebP — بحد أقصى 5MB</small>
+              </label>
+            }
+
+            @if (receiptError) {
+              <p class="field-error"><i class="fa-solid fa-circle-exclamation"></i> {{ receiptError }}</p>
+            }
+          </section>
+
+          <div class="checkout-submit">
+            @if (requestBlocksSubmission) {
+              <p><i class="fa-solid fa-circle-info"></i> لا يمكن إرسال طلب آخر لنفس الكورس حاليًا.</p>
+              <a class="checkout-submit__back" [routerLink]="['/course-details', course.id]">العودة للكورس</a>
+            } @else {
+              <p><i class="fa-solid fa-shield-halved"></i> سيتم رفع الإيصال ثم إرسال الطلب للمدرس.</p>
+              <button type="submit" [disabled]="isSubmitting">
+                @if (isSubmitting) {
+                  <span class="button-loader"></span>
+                  جاري إرسال الطلب...
+                } @else {
+                  إرسال طلب الاشتراك
+                  <i class="fa-solid fa-arrow-left"></i>
+                }
+              </button>
+            }
+          </div>
+        </form>
+
+        <aside class="order-summary">
+          <span class="order-summary__eyebrow">ملخص الاشتراك</span>
+          <h2>{{ course.title }}</h2>
+          <span class="subject-tag">{{ course.subject }} · {{ course.grade }}</span>
+
+          <dl>
+            <div>
+              <dt><i class="fa-solid fa-user-tie"></i> المدرس</dt>
+              <dd>{{ teacher.name }}</dd>
+            </div>
+            <div>
+              <dt><i class="fa-solid fa-users"></i> المجموعة</dt>
+              <dd>{{ group.name }}</dd>
+            </div>
+            <div>
+              <dt><i class="fa-regular fa-calendar"></i> الأيام</dt>
+              <dd>{{ groupDays }}</dd>
+            </div>
+            <div>
+              <dt><i class="fa-regular fa-clock"></i> الموعد</dt>
+              <dd>{{ groupTime }}</dd>
+            </div>
+            <div>
+              <dt><i class="fa-solid fa-location-dot"></i> المكان</dt>
+              <dd>{{ group.location }}</dd>
+            </div>
+          </dl>
+
+          <div class="order-total">
+            <span>إجمالي التحويل</span>
+            <strong>{{ course.price }} <small>جنيه</small></strong>
+          </div>
+        </aside>
+      </div>
+    </div>
+  }
+</main>

@@ -6,6 +6,7 @@ export interface Group {
   courseId: string;
   teacherId: string;
   maxStudents: number;
+  currentStudents?: number;
   schedule: string;
   time?: string;
   location: string;

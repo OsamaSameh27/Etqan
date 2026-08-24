@@ -76,6 +76,59 @@
 
 .mobile-enrollment { display: none; }
 
+.course-groups {
+  scroll-margin-top: 90px;
+  padding: 0 0 7rem;
+
+  &__header { display: flex; justify-content: space-between; align-items: end; gap: 2rem; margin-bottom: 1.5rem; }
+  &__header span { color: $primary; font-size: .78rem; font-weight: 800; }
+  &__header h2 { margin: .25rem 0 0; font-size: clamp(1.45rem, 3vw, 2rem); font-weight: 850; }
+  &__header p { max-width: 480px; margin: 0; color: $text-light; font-size: .85rem; line-height: 1.8; }
+}
+
+.groups-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+
+.group-card {
+  padding: 1.35rem;
+  background: #fff;
+  border: 1px solid $border-color;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+  transition: transform $transition, box-shadow $transition, border-color $transition;
+
+  &:hover { transform: translateY(-4px); border-color: rgba($primary, .35); box-shadow: $shadow-md; }
+  &__top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+  &__icon { width: 42px; height: 42px; display: grid; place-items: center; color: $primary; background: rgba($secondary, .18); border-radius: 13px; }
+  &__status { padding: .3rem .65rem; color: #39734d; font-size: .68rem; font-weight: 800; background: #edf8f0; border-radius: 999px; }
+  h3 { margin: 1rem 0 .8rem; font-size: 1rem; font-weight: 850; }
+  dl { display: grid; gap: .7rem; margin: 0 0 1.2rem; }
+  dl div { display: flex; justify-content: space-between; align-items: start; gap: 1rem; }
+  dt { display: flex; align-items: center; gap: .45rem; color: $text-light; font-size: .74rem; }
+  dt i { width: 15px; color: $primary; text-align: center; }
+  dd { margin: 0; font-size: .76rem; font-weight: 800; text-align: left; }
+  &__action { display: flex; justify-content: center; align-items: center; gap: .55rem; padding: .78rem; color: #fff; font-size: .78rem; font-weight: 800; text-decoration: none; background: $primary; border-radius: 11px; transition: background $transition; }
+  &__action:hover { color: #fff; background: $primary-dark; }
+}
+
+.groups-state {
+  min-height: 210px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: .65rem;
+  padding: 2rem;
+  text-align: center;
+  background: #fff;
+  border: 1px dashed $border-color;
+  border-radius: $radius-lg;
+
+  > i { color: $primary; font-size: 1.7rem; }
+  strong { font-size: .95rem; }
+  p { margin: 0; color: $text-light; font-size: .78rem; }
+  &--error > i { color: #b44747; }
+}
+
 .course-state {
   min-height: 100vh;
   display: flex;
@@ -99,6 +152,7 @@
   .course-hero__layout { grid-template-columns: 1fr; gap: 2rem; }
   .enrollment-card { max-width: 460px; }
   .course-content__layout { grid-template-columns: 1fr; }
+  .groups-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 575px) {
@@ -109,6 +163,9 @@
   .course-content { padding: 2rem 0 3rem; }
   .course-panel { padding: 1.2rem; }
   .enrollment-card { display: none; }
+  .course-groups { padding-bottom: 3rem; }
+  .course-groups__header { align-items: start; flex-direction: column; gap: .6rem; }
+  .groups-grid { grid-template-columns: 1fr; }
 
   .mobile-enrollment {
     position: fixed;

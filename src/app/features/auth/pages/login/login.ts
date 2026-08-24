@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthServices } from '../../services/auth.services';
 import { UserService } from '../../../../core/services/user-service';
 import { Alerts } from '../../../../core/utils/alerts';
@@ -24,6 +24,7 @@ export class Login {
   private fb = inject(NonNullableFormBuilder);
   private authServices = inject(AuthServices);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private userService = inject(UserService);
   private loadingService = inject(LoadingSpinnerServicess);
 
@@ -53,8 +54,17 @@ export class Login {
 
       this.userService.user.set(user);
 
-      if (user?.role === 'student') {
-        await this.router.navigate(['/']);
+      if (user.role === 'student') {
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+        const enrollmentUrl = returnUrl?.startsWith('/dashboard/student/enroll/')
+          ? returnUrl
+          : null;
+
+        if (enrollmentUrl) {
+          await this.router.navigateByUrl(enrollmentUrl);
+        } else {
+          await this.router.navigate(['/']);
+        }
         Alerts.success('مرحبًا', `مرحبًا بك مجددًا ${user.name}`);
       }
 

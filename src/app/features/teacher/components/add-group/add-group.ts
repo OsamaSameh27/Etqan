@@ -85,6 +85,7 @@ export class AddGroup {
       } else {
         const newGroup: Group = {
           ...groupData,
+          currentStudents: 0,
           createdAt: Timestamp.now(),
           teacherId: firebaseUser.uid,
         };

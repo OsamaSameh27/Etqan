@@ -1,0 +1,31 @@
+@use './variables.scss' as *;
+
+.request-banner {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid $border-color;
+  border-radius: 14px;
+}
+
+.request-banner > span {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: $primary;
+  background: rgba($secondary, .16);
+  border-radius: 12px;
+}
+
+.request-banner div { display: grid; gap: .15rem; }
+.request-banner strong { font-size: .82rem; }
+.request-banner p { margin: 0; color: $text-light; font-size: .7rem; }
+.request-banner--approved { border-color: #cfe8d6; }
+.request-banner--approved > span { color: #39734d; background: #edf8f0; }
+.request-banner--rejected { border-color: #f0d2d2; }
+.request-banner--rejected > span { color: #a64848; background: #fff0f0; }

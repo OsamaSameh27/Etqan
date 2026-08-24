@@ -28,6 +28,14 @@ export const teacherRoutes: Routes = [
         loadComponent: () => import('./pages/dashboard/groups/groups').then((m) => m.Groups),
       },
       {
+        path: 'requests',
+        title: 'طلبات الاشتراك | إتقان',
+        loadComponent: () =>
+          import('./pages/dashboard/enrollment-requests/enrollment-requests').then(
+            (m) => m.TeacherEnrollmentRequests,
+          ),
+      },
+      {
         path: 'profile',
         title: 'الملف الشخصي | إتقان',
         loadComponent: () => import('./pages/dashboard/profile/profile').then((m) => m.Profile),
