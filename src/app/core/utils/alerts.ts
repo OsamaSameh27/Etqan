@@ -6,6 +6,7 @@ export class Alerts {
       icon: 'success',
       title,
       text,
+      confirmButtonText: 'حسنًا',
       confirmButtonColor: '#8B5E3C',
       customClass: {
         container: 'my-swal-container',
@@ -18,6 +19,7 @@ export class Alerts {
       icon: 'error',
       title,
       text,
+      confirmButtonText: 'حسنًا',
       confirmButtonColor: '#8B5E3C',
       customClass: {
         container: 'my-swal-container',

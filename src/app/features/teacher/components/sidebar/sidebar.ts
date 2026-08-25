@@ -26,11 +26,11 @@ export class Sidebar {
   async logout() {
     try {
       await this.authService.logout();
-      Alerts.success('Logout', 'You have been logged out successfully.');
+      Alerts.success('تم تسجيل الخروج', 'تم تسجيل خروجك بنجاح.');
       await this.authService.checkAuthState();
       this.router.navigate(['/login']);
     } catch (error) {
-      Alerts.error('Logout Failed', 'An error occurred while logging out. Please try again.');
+      Alerts.error('تعذر تسجيل الخروج', 'حدث خطأ أثناء تسجيل الخروج، يرجى المحاولة مرة أخرى.');
     }
   }
 }
