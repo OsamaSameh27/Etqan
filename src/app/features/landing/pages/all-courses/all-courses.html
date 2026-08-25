@@ -1,20 +1,34 @@
 <main class="courses-catalog" dir="rtl">
   <section class="catalog-intro" aria-labelledby="catalog-title">
     <div class="container">
-      <a routerLink="/" fragment="courses" class="catalog-intro__back">
+      <a routerLink="/" [fragment]="teacherId ? 'teachers' : 'courses'" class="catalog-intro__back">
         <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
         العودة للرئيسية
       </a>
 
       <div class="catalog-intro__content">
         <div>
-          <span class="catalog-intro__eyebrow">دورات إتقان</span>
-          <h1 id="catalog-title">اختار الكورس اللي يناسب هدفك</h1>
+          <span class="catalog-intro__eyebrow">
+            {{ teacherId ? 'كورسات المدرس' : 'دورات إتقان' }}
+          </span>
+          <h1 id="catalog-title">
+            {{ teacherId ? 'كورسات ' + teacherProfileName : 'اختار الكورس اللي يناسب هدفك' }}
+          </h1>
           <p>
-            تصفّح الدورات المتاحة، قارن بين المواد والمراحل الدراسية، وابدأ مع المدرس
-            المناسب ليك.
+            {{
+              teacherId
+                ? 'تصفح كل الكورسات والمراحل المتاحة مع المدرس، واختر المجموعة المناسبة ليك.'
+                : 'تصفّح الدورات المتاحة، قارن بين المواد والمراحل الدراسية، وابدأ مع المدرس المناسب ليك.'
+            }}
           </p>
         </div>
+
+        @if (teacherId) {
+          <button type="button" class="catalog-intro__all" (click)="showAllCourses()">
+            عرض كل الكورسات
+            <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+          </button>
+        }
 
       </div>
     </div>
@@ -117,6 +131,9 @@
             @for (course of filteredCourses; track course.id) {
               <article class="course-card">
                 <div class="course-card__top">
+                  <span class="course-card__subject-mark" aria-hidden="true">
+                    <i class="fa-solid fa-book-open"></i>
+                  </span>
                   <div class="course-card__tags">
                     <span>{{ course.subject }}</span>
                     <span>{{ course.grade }}</span>
@@ -145,7 +162,7 @@
                   </div>
 
                   <a [routerLink]="['/course-details', course.id]" class="course-card__link">
-                    عرض التفاصيل
+                    تفاصيل الكورس
                     <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
                   </a>
                 </div>

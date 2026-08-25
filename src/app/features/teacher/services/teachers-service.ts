@@ -15,6 +15,7 @@ export class TeachersService {
       const teacher = teacherDoc.data() as PublicTeacherProfile;
 
       return {
+        id: teacherDoc.id,
         ...teacher,
         grades: Array.isArray(teacher.grades) ? teacher.grades : [],
       };

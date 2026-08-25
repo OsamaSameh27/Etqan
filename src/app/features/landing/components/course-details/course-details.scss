@@ -106,7 +106,7 @@
   dt { display: flex; align-items: center; gap: .45rem; color: $text-light; font-size: .74rem; }
   dt i { width: 15px; color: $primary; text-align: center; }
   dd { margin: 0; font-size: .76rem; font-weight: 800; text-align: left; }
-  &__action { display: flex; justify-content: center; align-items: center; gap: .55rem; padding: .78rem; color: #fff; font-size: .78rem; font-weight: 800; text-decoration: none; background: $primary; border-radius: 11px; transition: background $transition; }
+  &__action { width: 100%; display: flex; justify-content: center; align-items: center; gap: .55rem; padding: .78rem; color: #fff; font-size: .78rem; font-weight: 800; text-decoration: none; background: $primary; border: 0; border-radius: 11px; transition: background $transition; }
   &__action:hover { color: #fff; background: $primary-dark; }
 }
 

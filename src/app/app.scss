@@ -1,4 +1,6 @@
 @use './../styles/variables.scss';
+
 .body {
+  min-height: 100vh;
   background: #ffedde;
 }

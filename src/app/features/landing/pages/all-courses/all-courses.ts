@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { Course } from '../../../../core/models/course.model';
 import { AuthServices } from '../../../auth/services/auth.services';
@@ -16,6 +16,8 @@ export class AllCourses implements OnInit {
   private coursesService = inject(AddcourseService);
   private authService = inject(AuthServices);
   private cdr = inject(ChangeDetectorRef);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   courses: Course[] = [];
   filteredCourses: Course[] = [];
@@ -31,8 +33,11 @@ export class AllCourses implements OnInit {
 
   isLoading = true;
   errorMessage = '';
+  teacherId = '';
+  teacherProfileName = '';
 
   async ngOnInit() {
+    this.teacherId = this.route.snapshot.queryParamMap.get('teacher') ?? '';
     this.isLoading = true;
     this.errorMessage = '';
 
@@ -67,6 +72,10 @@ export class AllCourses implements OnInit {
       ];
 
       await this.loadTeacherNames();
+
+      if (this.teacherId) {
+        this.teacherProfileName = this.teacherNames[this.teacherId] ?? 'المدرس';
+      }
 
       this.applyFilters();
     } catch (error) {
@@ -126,7 +135,9 @@ export class AllCourses implements OnInit {
         this.selectedGrade === 'الكل' ||
         course.grade === this.selectedGrade;
 
-      return matchesSearch && matchesSubject && matchesGrade;
+      const matchesTeacher = !this.teacherId || course.teacherId === this.teacherId;
+
+      return matchesSearch && matchesSubject && matchesGrade && matchesTeacher;
     });
   }
 
@@ -144,6 +155,13 @@ export class AllCourses implements OnInit {
     this.searchTerm = '';
     this.selectedSubject = 'الكل';
     this.selectedGrade = 'الكل';
+    this.applyFilters();
+  }
+
+  async showAllCourses() {
+    this.teacherId = '';
+    this.teacherProfileName = '';
+    await this.router.navigate(['/all-courses']);
     this.applyFilters();
   }
 

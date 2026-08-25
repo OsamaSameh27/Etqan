@@ -80,20 +80,16 @@
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">الماده</label>
-        <select
-          class="form-select"
+        <input
+          type="text"
+          class="form-input"
           formControlName="subject"
+          readonly
+          aria-label="مادة المدرس"
           [class.is-invalid]="
             courseForm.controls.subject.touched && courseForm.controls.subject.invalid
           "
-        >
-            <option value="" disabled selected>اختر الماده</option>
-            <option value="علوم">علوم</option>
-            <option value="رياضيات">رياضيات</option>
-            <option value="لغة عربية">لغة عربية</option>
-            <option value="لغة انجليزية">لغة انجليزية</option>
-            <option value="تاريخ">تاريخ</option>
-          </select>
+        />
           @if (
             courseForm.controls.subject.touched && courseForm.controls.subject.errors?.['required']
           ) {

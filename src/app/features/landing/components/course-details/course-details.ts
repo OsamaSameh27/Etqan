@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AddcourseService } from '../../../teacher/services/addcourseservice';
 import { AuthServices } from '../../../auth/services/auth.services';
 import { Course } from '../../../../core/models/course.model';
@@ -8,6 +8,7 @@ import { BreadcrumbsServise } from '../../../../core/shared/services/breadcrumbs
 import { Addgroupservice } from '../../../teacher/services/addgroupservice';
 import { Group } from '../../../../core/models/group.model';
 import { getGroupScheduleParts } from '../../../../core/utils/group-schedule';
+import { Alerts } from '../../../../core/utils/alerts';
 
 
 @Component({
@@ -23,6 +24,7 @@ export class CourseDetails {
   private cdr = inject(ChangeDetectorRef);
   private breadcrumbsService = inject(BreadcrumbsServise);
   private groupService = inject(Addgroupservice);
+  private router = inject(Router);
 
   course: Course | null = null;
   teacherName = '';
@@ -96,5 +98,38 @@ export class CourseDetails {
 
   groupTime(group: Group) {
     return getGroupScheduleParts(group).time;
+  }
+
+  async chooseGroup(group: Group) {
+    if (!this.course?.id || !group.id) return;
+
+    const enrollmentUrl = `/dashboard/student/enroll/${this.course.id}/${group.id}`;
+    const firebaseUser = await this.authService.getCurrentUser();
+
+    if (!firebaseUser) {
+      await this.router.navigate(['/login'], {
+        queryParams: { returnUrl: enrollmentUrl },
+      });
+      return;
+    }
+
+    const user = await this.authService.getUserData(firebaseUser.uid);
+
+    if (user?.role === 'teacher') {
+      Alerts.error(
+        'الاشتراك متاح للطلاب فقط',
+        'حساب المدرس لا يمكنه الاشتراك في الكورسات. يمكنك متابعة إدارة كورساتك من لوحة التحكم.',
+      );
+      return;
+    }
+
+    if (user?.role === 'student') {
+      await this.router.navigateByUrl(enrollmentUrl);
+      return;
+    }
+
+    await this.router.navigate(['/login'], {
+      queryParams: { returnUrl: enrollmentUrl },
+    });
   }
 }

@@ -57,7 +57,7 @@ export class AddCourse {
 
   private addCourseService = inject(AddcourseService);
   private authServices = inject(AuthServices);
-  private yourCourses = inject(YourCourses);
+  private yourCourses = inject(YourCourses, { optional: true });
 
   async saveCourse() {
     if (this.courseForm.invalid) {
@@ -106,7 +106,7 @@ export class AddCourse {
         Alerts.success('تم إنشاء الكورس بنجاح', 'تم إنشاء الكورس بنجاح');
       }
 
-      await this.yourCourses.loadCourses();
+      await this.yourCourses?.loadCourses();
       this.closeModal.emit();
     } catch (error) {
       console.error('Error adding course:', error);

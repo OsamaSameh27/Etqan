@@ -1,9 +1,10 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { TeachersService } from '../../../teacher/services/teachers-service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-teachers',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './teachers.html',
   styleUrl: './teachers.scss',
 })

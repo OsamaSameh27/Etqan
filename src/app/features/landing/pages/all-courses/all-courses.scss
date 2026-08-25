@@ -8,10 +8,12 @@
 
   &__back { display: inline-flex; gap: .5rem; margin-bottom: 2rem; color: $text-light; text-decoration: none; }
   &__back:hover, &__eyebrow { color: $primary; }
-  &__content { display: block; }
+  &__content { display: flex; justify-content: space-between; align-items: end; gap: 2rem; }
   &__eyebrow { display: block; margin-bottom: .8rem; font-weight: 800; }
   h1 { margin: 0 0 .8rem; font-size: clamp(2rem, 4vw, 3.4rem); font-weight: 850; }
   p { margin: 0; color: $text-light; }
+  &__all { display: inline-flex; align-items: center; gap: .55rem; flex-shrink: 0; padding: .7rem 1rem; color: $primary; font-weight: 800; background: #fff; border: 1px solid rgba($primary, .25); border-radius: 12px; }
+  &__all:hover { color: #fff; background: $primary; }
 }
 
 .catalog-tools, .course-card {
@@ -51,27 +53,36 @@
 .courses-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
 
 .course-card {
+  position: relative;
   display: flex;
   flex-direction: column;
-  padding: 1.3rem;
+  overflow: hidden;
+  padding: 0;
+  border-radius: 24px;
+  box-shadow: 0 14px 34px rgba($primary-dark, .07);
+  transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
 
-  &__footer { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
-  &__top { margin-bottom: 1.1rem; }
+  &::after { content: ''; position: absolute; top: -45px; left: -45px; width: 130px; height: 130px; pointer-events: none; border: 1px solid rgba($secondary, .45); border-radius: 50%; }
+  &:hover { transform: translateY(-7px); border-color: rgba($primary, .32); box-shadow: 0 24px 48px rgba($primary-dark, .13); }
+
+  &__footer { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin: 0 1.25rem 1.25rem; }
+  &__top { min-height: 86px; display: flex; align-items: center; gap: .75rem; margin-bottom: 0; padding: 1.1rem 1.25rem; background: linear-gradient(125deg, rgba($secondary, .27), rgba(#fff, .95)); border-bottom: 1px solid rgba($secondary, .23); }
+  &__subject-mark { width: 43px; height: 43px; display: grid; place-items: center; flex-shrink: 0; color: #fff; background: $primary; border-radius: 14px 14px 5px 14px; box-shadow: 0 8px 18px rgba($primary, .2); }
   &__tags { display: flex; flex-wrap: wrap; gap: .35rem; }
-  &__tags span { padding: .3rem .6rem; color: $primary-dark; font-size: .72rem; font-weight: 700; background: rgba($secondary, .17); border-radius: 999px; }
-  &__body { display: flex; flex: 1; flex-direction: column; }
-  &__body h2 { margin: 0 0 .5rem; font-size: 1.15rem; font-weight: 800; line-height: 1.5; }
-  &__description { min-height: 3.3rem; color: $text-light; font-size: .85rem; line-height: 1.7; }
-  &__teacher { display: flex; align-items: center; gap: .6rem; margin-top: auto; padding: .7rem; background: $background; border-radius: $radius-md; }
-  &__teacher-icon { color: $primary; }
+  &__tags span { padding: .3rem .62rem; color: $primary-dark; font-size: .7rem; font-weight: 800; background: rgba(#fff, .7); border: 1px solid rgba($primary, .12); border-radius: 999px; }
+  &__body { display: flex; flex: 1; flex-direction: column; padding: 1.25rem; }
+  &__body h2 { min-height: 3.5rem; margin: 0 0 .55rem; font-size: 1.14rem; font-weight: 850; line-height: 1.55; }
+  &__description { display: -webkit-box; min-height: 3.3rem; overflow: hidden; color: $text-light; font-size: .83rem; line-height: 1.75; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+  &__teacher { display: flex; align-items: center; gap: .65rem; margin-top: auto; padding: .72rem; background: linear-gradient(135deg, $background, #fff); border: 1px solid rgba($border-color, .75); border-radius: $radius-md; }
+  &__teacher-icon { width: 34px; height: 34px; display: grid; place-items: center; color: $primary; background: #fff; border-radius: 50%; }
   &__teacher div, &__price { display: grid; }
   &__teacher span:not(.course-card__teacher-icon), &__price > span { color: $text-light; font-size: .68rem; }
   &__teacher strong { font-size: .8rem; }
-  &__footer { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid $border-color; }
+  &__footer { padding-top: 1rem; border-top: 1px solid $border-color; }
   &__price strong { color: $primary; font-size: 1.2rem; }
   &__price small { font-size: .7rem; }
-  &__link { padding: .6rem .8rem; color: #fff; font-size: .8rem; font-weight: 800; text-decoration: none; background: $primary; border-radius: 9px; }
-  &__link:hover { color: #fff; background: $primary-dark; }
+  &__link { display: inline-flex; align-items: center; gap: .45rem; padding: .65rem .85rem; color: #fff; font-size: .78rem; font-weight: 800; text-decoration: none; background: $primary; border-radius: 11px; }
+  &__link:hover { color: #fff; background: $primary-dark; transform: translateX(-2px); }
 }
 
 .catalog-status { min-height: 240px; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: .6rem; padding: 2rem; text-align: center; }
@@ -88,4 +99,6 @@
   .catalog-intro h1 { font-size: 2rem; }
   .catalog-tools__top, .courses-grid { grid-template-columns: 1fr; }
   .catalog-tools__subjects { display: grid; gap: .5rem; }
+  .catalog-intro__content { align-items: stretch; flex-direction: column; }
+  .catalog-intro__all { width: 100%; justify-content: center; }
 }

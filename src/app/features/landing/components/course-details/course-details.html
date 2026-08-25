@@ -145,13 +145,14 @@
                   </div>
                 </dl>
 
-                <a
+                <button
+                  type="button"
                   class="group-card__action"
-                  [routerLink]="['/dashboard/student/enroll', course.id, group.id]"
+                  (click)="chooseGroup(group)"
                 >
                   اختيار المجموعة والاشتراك
                   <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
-                </a>
+                </button>
               </article>
             }
           </div>

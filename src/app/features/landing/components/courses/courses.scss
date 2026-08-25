@@ -9,25 +9,30 @@
   &__subtitle { color: $text-light; font-size: 1.08rem; line-height: 1.8; }
 
   &__card {
+    position: relative;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     background: #fff;
     border: 1px solid $border-color;
-    border-radius: $radius-lg;
-    box-shadow: $shadow-sm;
-    transition: $transition;
+    border-radius: 24px;
+    box-shadow: 0 14px 36px rgba($primary-dark, .08);
+    transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
 
-    &:hover { transform: translateY(-6px); border-color: rgba($primary, .35); box-shadow: $shadow-md; }
+    &:hover { transform: translateY(-8px); border-color: rgba($primary, .35); box-shadow: 0 24px 48px rgba($primary-dark, .14); }
   }
 
+  &__card-orbit { position: absolute; top: -42px; left: -36px; z-index: 1; width: 120px; height: 120px; pointer-events: none; border: 1px solid rgba($secondary, .4); border-radius: 50%; }
+
   &__card-head {
-    min-height: 90px;
+    position: relative;
+    z-index: 2;
+    min-height: 96px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1.25rem 1.4rem;
-    background: linear-gradient(115deg, rgba($secondary, .22), rgba($secondary, .07));
+    background: linear-gradient(125deg, rgba($secondary, .28), rgba(#fff, .92));
     border-bottom: 1px solid rgba($secondary, .25);
   }
 
@@ -38,13 +43,14 @@
     place-items: center;
     color: #fff;
     background: $primary;
-    border-radius: 13px 13px 4px 13px;
+    border-radius: 15px 15px 5px 15px;
+    box-shadow: 0 9px 20px rgba($primary, .18);
   }
 
   &__subject { color: $primary-dark; font-size: .85rem; font-weight: 800; }
   &__demand { display: flex; align-items: center; gap: .3rem; padding: .28rem .55rem; color: #39734d; font-size: .66rem; font-weight: 800; background: #edf8f0; border-radius: 999px; }
   &__content { display: flex; flex: 1; flex-direction: column; padding: 1.4rem; }
-  &__grade { align-self: flex-start; margin-bottom: .55rem; color: $primary; font-size: .75rem; font-weight: 800; }
+  &__grade { align-self: flex-start; margin-bottom: .65rem; padding: .26rem .58rem; color: $primary; font-size: .7rem; font-weight: 800; background: rgba($secondary, .13); border-radius: 999px; }
   &__course-title { min-height: 3.4rem; margin: 0 0 .55rem; color: $text-dark; font-size: 1.18rem; font-weight: 800; line-height: 1.55; }
 
   &__description {
@@ -65,7 +71,8 @@
     gap: .65rem;
     margin-top: auto;
     padding: .75rem;
-    background: $background;
+    background: linear-gradient(135deg, $background, #fff);
+    border: 1px solid rgba($border-color, .75);
     border-radius: $radius-md;
 
     &-icon { width: 34px; height: 34px; display: grid; place-items: center; color: $primary; background: #fff; border: 1px solid $border-color; border-radius: 50%; }
@@ -90,9 +97,9 @@
     font-weight: 800;
     text-decoration: none;
     border: 1px solid rgba($primary, .35);
-    border-radius: 10px;
+    border-radius: 12px;
 
-    &:hover { color: #fff; background: $primary; }
+    &:hover { color: #fff; background: $primary; transform: translateX(-2px); }
   }
 
   &__cta {
