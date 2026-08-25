@@ -74,13 +74,17 @@
 
   &:hover {
     color: $primary;
-    background: rgba($primary, 0.04);
   }
 
-  &:hover::after {
+  &:hover::after,
+  &.active::after {
     width: 60%;
     right: 20%;
     left: 20%;
+  }
+
+  &.active {
+    color: $primary;
   }
 }
 

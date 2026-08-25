@@ -5,6 +5,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Course } from '../../../../core/models/course.model';
 import { Group } from '../../../../core/models/group.model';
 import { User } from '../../../../core/models/user.model';
+import { PublicTeacherProfile } from '../../../../core/models/public-teacher-profile.model';
 import {
   EnrollmentPaymentMethod,
   EnrollmentRequest,
@@ -41,7 +42,8 @@ export class EnrollmentCheckout {
   course: Course | null = null;
   group: Group | null = null;
   student: User | null = null;
-  teacher: User | null = null;
+  teacher: PublicTeacherProfile | null = null;
+  teacherPaymentPhone = '';
   existingRequest: EnrollmentRequest | null = null;
 
   isLoading = true;
@@ -97,8 +99,11 @@ export class EnrollmentCheckout {
         return;
       }
 
-      const teacher = await this.authService.getUserData(course.teacherId);
-      if (!teacher) {
+      const [teacher, paymentProfile] = await Promise.all([
+        this.authService.getPublicTeacherProfile(course.teacherId),
+        this.authService.getTeacherPaymentProfile(course.teacherId),
+      ]);
+      if (!teacher || !paymentProfile) {
         this.finishWithMissingData();
         return;
       }
@@ -107,6 +112,7 @@ export class EnrollmentCheckout {
       this.group = group;
       this.student = student;
       this.teacher = teacher;
+      this.teacherPaymentPhone = paymentProfile.paymentPhone;
       this.existingRequest = existingRequest;
       if (existingRequest?.status === 'pending' || existingRequest?.status === 'approved') {
         this.receiptPreview = existingRequest.receiptUrl;
@@ -261,7 +267,7 @@ export class EnrollmentCheckout {
   }
 
   get paymentNumber() {
-    return this.teacher?.phone ?? '';
+    return this.teacherPaymentPhone;
   }
 
   get selectedPaymentMethod() {

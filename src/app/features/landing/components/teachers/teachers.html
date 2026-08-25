@@ -1,94 +1,77 @@
-@if (teachers()) {
-  <section
-    class="teachers-section section"
-    id="teachers"
-    dir="rtl"
-    aria-labelledby="teachers-heading"
-  >
-    <div class="container">
+<section
+  class="teachers-section section"
+  id="teachers"
+  dir="rtl"
+  aria-labelledby="teachers-heading"
+>
+  <div class="container">
       <header class="teachers-section__header text-center mx-auto mb-4 mb-lg-5">
         <h2 id="teachers-heading" class="teachers-section__title fw-bold mb-3" data-aos="fade-up">
-          تعرف على أفضل المدرسين
+          مدرسون في تخصصات مختلفة
         </h2>
         <p class="teachers-section__subtitle mb-0" data-aos="fade-up" data-aos-delay="100">
-          اختر المدرس المناسب لك وابدأ رحلتك التعليمية مع نخبة من أفضل المدرسين.
+          تعرف على تخصص كل مدرس والمراحل التي يدرّس لها قبل اختيار الكورس المناسب.
         </p>
       </header>
 
-      <nav
-        class="teachers-section__filters d-flex flex-wrap justify-content-center gap-2 mb-4 mb-lg-5"
-        aria-label="تصفية المدرسين حسب المادة"
-        data-aos="zoom-in"
-        data-aos-delay="150"
-      >
-        <button type="button" class="teachers-section__chip teachers-section__chip--active">
-          الكل
-        </button>
-        <button type="button" class="teachers-section__chip">الرياضيات</button>
-        <button type="button" class="teachers-section__chip">الفيزياء</button>
-        <button type="button" class="teachers-section__chip">الكيمياء</button>
-        <button type="button" class="teachers-section__chip">الأحياء</button>
-        <button type="button" class="teachers-section__chip">اللغة العربية</button>
-        <button type="button" class="teachers-section__chip">اللغة الإنجليزية</button>
-      </nav>
-      <div class="row g-4 g-lg-5">
-        @for (item of teachers(); track $index) {
-          <div
-            class="col-9 col-sm-6 col-lg-4 mx-auto my-5 d-flex"
-            data-aos="zoom-in-up"
-            data-aos-delay="0"
-          >
-            <article class="teachers-section__card w-100">
-              <div class="teachers-section__avatar-wrap mx-auto">
-                <img
-                  [src]="item.image"
-                  alt="{{ item.name }}"
-                  class="teachers-section__avatar"
-                  width="120"
-                  height="120"
-                  loading="lazy"
-                />
-              </div>
-              <h3 class="teachers-section__name fw-bold text-center mb-1">{{ item.name }}</h3>
-              <p class="teachers-section__subject text-center mb-3">{{ item.subject }}</p>
-              <div
-                class="teachers-section__rating d-flex align-items-center justify-content-center gap-1 mb-3"
-              >
-                <i class="fa-solid fa-star" aria-hidden="true"></i>
-                <span class="fw-semibold">4.9</span>
-              </div>
-              <ul class="teachers-section__stats list-unstyled mb-3">
-                <li>
-                  <i class="fa-solid fa-briefcase" aria-hidden="true"></i>
-                  <span>
-                    {{ item.experienceYears }}
-                    {{ item.experienceYears! <= 10 ? 'سنين خبره' : 'سنة خبره ' }}
-                  </span>
-                </li>
-                <li>
-                  <i class="fa-solid fa-users" aria-hidden="true"></i>
-                  <span>320 طالب</span>
-                </li>
-                <li>
-                  <i class="fa-solid fa-book-open" aria-hidden="true"></i>
-                  <span>8 كورسات</span>
-                </li>
-              </ul>
-              <div class="teachers-section__grades mb-4">
-                @for (grade of item.grades; track $index) {
-                  <span class="teachers-section__grade-tag">{{ grade }}</span>
-                }
-              </div>
-              <a
-                href="#teachers"
-                class="btn btn-outline-custom teachers-section__btn w-100 mt-auto"
-              >
-                عرض الملف الشخصي
-              </a>
-            </article>
-          </div>
-        }
-      </div>
-    </div>
-  </section>
-}
+      @if (isLoading) {
+        <div class="teachers-section__state" role="status">
+          <span class="spinner-border text-primary" aria-hidden="true"></span>
+          <strong>جاري تحميل المدرسين...</strong>
+        </div>
+      } @else if (loadError) {
+        <div class="teachers-section__state">
+          <i class="fa-solid fa-cloud-arrow-down"></i>
+          <strong>تعذر تحميل المدرسين</strong>
+          <span>تأكد من اتصالك بالإنترنت وحاول مرة أخرى.</span>
+          <button type="button" class="teachers-section__retry" (click)="loadTeachers()">
+            إعادة المحاولة
+          </button>
+        </div>
+      } @else if (teachers().length) {
+        <div class="row g-4 g-lg-5">
+          @for (item of teachers(); track $index) {
+            <div
+              class="col-9 col-sm-6 col-lg-4 mx-auto my-5 d-flex"
+              data-aos="zoom-in-up"
+              data-aos-delay="0"
+            >
+              <article class="teachers-section__card w-100">
+                <div class="teachers-section__avatar-wrap mx-auto">
+                  <img
+                    [src]="item.image"
+                    alt="{{ item.name }}"
+                    class="teachers-section__avatar"
+                    width="120"
+                    height="120"
+                    loading="lazy"
+                  />
+                </div>
+                <h3 class="teachers-section__name fw-bold text-center mb-1">{{ item.name }}</h3>
+                <p class="teachers-section__subject text-center mb-3">{{ item.subject }}</p>
+                <ul class="teachers-section__stats list-unstyled mb-3">
+                  @if (item.experienceYears) {
+                    <li>
+                      <i class="fa-solid fa-briefcase" aria-hidden="true"></i>
+                      <span>{{ item.experienceYears }} سنوات خبرة</span>
+                    </li>
+                  }
+                </ul>
+                <div class="teachers-section__grades mb-4">
+                  @for (grade of item.grades; track $index) {
+                    <span class="teachers-section__grade-tag">{{ grade }}</span>
+                  }
+                </div>
+              </article>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="teachers-section__state">
+          <i class="fa-solid fa-chalkboard-user"></i>
+          <strong>لا يوجد مدرسون لعرضهم حاليًا</strong>
+          <span>سيظهر المدرسون هنا بعد اكتمال حساباتهم.</span>
+        </div>
+      }
+  </div>
+</section>

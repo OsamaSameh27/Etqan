@@ -1,0 +1,238 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isTeacher() {
+      return isSignedIn()
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher';
+    }
+
+    function coursePath(courseId) {
+      return /databases/$(database)/documents/courses/$(courseId);
+    }
+
+    function groupPath(groupId) {
+      return /databases/$(database)/documents/Groups/$(groupId);
+    }
+
+    function enrollmentRequestPath(requestId) {
+      return /databases/$(database)/documents/enrollmentRequests/$(requestId);
+    }
+
+    function enrollmentPath(enrollmentId) {
+      return /databases/$(database)/documents/enrollments/$(enrollmentId);
+    }
+
+    function isCourseTeacher(courseId) {
+      return isSignedIn()
+        && get(coursePath(courseId)).data.teacherId == request.auth.uid;
+    }
+
+    function isValidEnrollmentRequest(data) {
+      return isSignedIn()
+        && data.keys().hasAll([
+          'studentId', 'teacherId', 'courseId', 'groupId',
+          'studentName', 'studentEmail', 'studentPhone',
+          'courseTitle', 'groupName', 'amount', 'paymentMethod',
+          'receiptUrl', 'receiptPublicId', 'status', 'createdAt'
+        ])
+        && data.keys().hasOnly([
+          'studentId', 'teacherId', 'teacherName', 'courseId', 'groupId',
+          'studentName', 'studentEmail', 'studentPhone',
+          'courseTitle', 'groupName', 'amount', 'paymentMethod',
+          'receiptUrl', 'receiptPublicId', 'status', 'createdAt'
+        ])
+        && data.studentId == request.auth.uid
+        && data.status == 'pending'
+        && data.studentName is string
+        && data.studentEmail is string
+        && data.studentPhone is string
+        && data.receiptUrl is string
+        && data.receiptPublicId is string
+        && data.paymentMethod in ['cash-wallet', 'instapay']
+        && data.amount is number
+        && data.teacherId == get(coursePath(data.courseId)).data.teacherId
+        && data.courseTitle == get(coursePath(data.courseId)).data.title
+        && data.amount == get(coursePath(data.courseId)).data.price
+        && get(groupPath(data.groupId)).data.courseId == data.courseId
+        && get(groupPath(data.groupId)).data.teacherId == data.teacherId
+        && data.groupName == get(groupPath(data.groupId)).data.name;
+    }
+
+    function studentCreatedRequestForCourse(courseId) {
+      let requestId = request.auth.uid + '_' + courseId;
+      let requestDoc = enrollmentRequestPath(requestId);
+      return !exists(requestDoc)
+        && existsAfter(requestDoc)
+        && getAfter(requestDoc).data.studentId == request.auth.uid
+        && getAfter(requestDoc).data.courseId == courseId
+        && getAfter(requestDoc).data.status == 'pending';
+    }
+
+    match /users/{userId} {
+      allow create: if isOwner(userId)
+        && request.resource.data.role in ['student', 'teacher'];
+
+      allow read: if isOwner(userId);
+
+      allow update: if isOwner(userId)
+        && request.resource.data.role == resource.data.role
+        && request.resource.data.email == resource.data.email;
+
+      allow delete: if false;
+    }
+
+    match /publicTeacherProfiles/{teacherId} {
+      allow read: if true;
+
+      allow create, update: if isOwner(teacherId)
+        && isTeacher()
+        && request.resource.data.keys().hasAll(['name'])
+        && request.resource.data.keys().hasOnly([
+          'name', 'image', 'subject', 'bio', 'experienceYears', 'grades'
+        ]);
+
+      allow delete: if false;
+    }
+
+    match /teacherPaymentProfiles/{teacherId} {
+      allow read: if isSignedIn();
+
+      allow create, update: if isOwner(teacherId)
+        && isTeacher()
+        && request.resource.data.keys().hasOnly(['teacherId', 'paymentPhone'])
+        && request.resource.data.teacherId == teacherId
+        && request.resource.data.paymentPhone is string;
+
+      allow delete: if false;
+    }
+
+    match /courses/{courseId} {
+      allow read: if true;
+
+      allow create: if isTeacher()
+        && request.resource.data.teacherId == request.auth.uid
+        && request.resource.data.requestCount == 0;
+
+      allow update: if isSignedIn() && (
+        (
+          resource.data.teacherId == request.auth.uid
+          && request.resource.data.teacherId == resource.data.teacherId
+        )
+        ||
+        (
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['requestCount'])
+          && request.resource.data.requestCount == resource.data.requestCount + 1
+          && studentCreatedRequestForCourse(courseId)
+        )
+      );
+
+      allow delete: if isSignedIn()
+        && resource.data.teacherId == request.auth.uid;
+    }
+
+    match /Groups/{groupId} {
+      allow read: if true;
+
+      allow create: if isTeacher()
+        && request.resource.data.teacherId == request.auth.uid
+        && isCourseTeacher(request.resource.data.courseId)
+        && request.resource.data.currentStudents == 0;
+
+      allow update: if isSignedIn()
+        && resource.data.teacherId == request.auth.uid
+        && request.resource.data.teacherId == resource.data.teacherId;
+
+      allow delete: if isSignedIn()
+        && resource.data.teacherId == request.auth.uid;
+    }
+
+    match /enrollmentRequests/{requestId} {
+      allow get: if isSignedIn() && (
+        requestId.matches(request.auth.uid + '_.*')
+        || resource.data.studentId == request.auth.uid
+        || resource.data.teacherId == request.auth.uid
+      );
+
+      allow list: if isSignedIn() && (
+        resource.data.studentId == request.auth.uid
+        || resource.data.teacherId == request.auth.uid
+      );
+
+      allow create: if isValidEnrollmentRequest(request.resource.data)
+        && requestId == request.auth.uid + '_' + request.resource.data.courseId;
+
+      allow update: if isSignedIn() && (
+        (
+          resource.data.studentId == request.auth.uid
+          && resource.data.status == 'rejected'
+          && request.resource.data.studentId == resource.data.studentId
+          && request.resource.data.teacherId == resource.data.teacherId
+          && request.resource.data.courseId == resource.data.courseId
+          && isValidEnrollmentRequest(request.resource.data)
+        )
+        ||
+        (
+          resource.data.teacherId == request.auth.uid
+          && resource.data.status == 'pending'
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['status', 'reviewedAt', 'rejectionReason'])
+          && request.resource.data.status in ['approved', 'rejected']
+          && (
+            request.resource.data.status == 'rejected'
+            || existsAfter(enrollmentPath(requestId))
+          )
+        )
+      );
+
+      allow delete: if false;
+    }
+
+    match /enrollments/{enrollmentId} {
+      allow get: if isSignedIn() && (
+        resource.data.studentId == request.auth.uid
+        || resource.data.teacherId == request.auth.uid
+      );
+
+      allow list: if isSignedIn() && (
+        resource.data.studentId == request.auth.uid
+        || resource.data.teacherId == request.auth.uid
+      );
+
+      allow create: if isSignedIn()
+        && request.resource.data.keys().hasOnly([
+          'studentId', 'teacherId', 'courseId', 'groupId',
+          'studentName', 'studentPhone', 'courseTitle',
+          'groupName', 'status', 'joinedAt'
+        ])
+        && request.resource.data.teacherId == request.auth.uid
+        && request.resource.data.status == 'active'
+        && enrollmentId == request.resource.data.studentId + '_'
+          + request.resource.data.courseId
+        && get(enrollmentRequestPath(enrollmentId)).data.status == 'pending'
+        && get(enrollmentRequestPath(enrollmentId)).data.teacherId == request.auth.uid
+        && get(enrollmentRequestPath(enrollmentId)).data.studentId
+          == request.resource.data.studentId
+        && get(enrollmentRequestPath(enrollmentId)).data.courseId
+          == request.resource.data.courseId
+        && get(enrollmentRequestPath(enrollmentId)).data.groupId
+          == request.resource.data.groupId
+        && get(coursePath(request.resource.data.courseId)).data.teacherId
+          == request.auth.uid
+        && get(groupPath(request.resource.data.groupId)).data.teacherId
+          == request.auth.uid
+        && get(groupPath(request.resource.data.groupId)).data.courseId
+          == request.resource.data.courseId;
+
+      allow update, delete: if false;
+    }
+  }
+}

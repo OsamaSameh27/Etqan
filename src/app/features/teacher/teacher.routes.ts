@@ -12,6 +12,12 @@ export const teacherRoutes: Routes = [
 
     children: [
       {
+        path: '',
+        title: 'لوحة تحكم المدرس | إتقان',
+        loadComponent: () =>
+          import('./pages/dashboard/overview/overview').then((m) => m.TeacherOverview),
+      },
+      {
         path: 'add-course',
         title: 'إضافة دورة | إتقان',
         loadComponent: () => import('./components/add-course/add-course').then((m) => m.AddCourse),

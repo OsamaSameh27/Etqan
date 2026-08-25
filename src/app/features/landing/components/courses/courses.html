@@ -2,31 +2,33 @@
   <div class="container">
     <header class="courses-section__header text-center mx-auto mb-4 mb-lg-5">
       <h2 id="courses-heading" class="courses-section__title fw-bold mb-3" data-aos="fade-up">
-        استكشف أحدث الكورسات
+        {{ showingLatestCourses ? 'أحدث الكورسات' : 'الكورسات الأكثر طلبًا' }}
       </h2>
       <p class="courses-section__subtitle mb-0" data-aos="fade-up" data-aos-delay="100">
-        اختر الكورس المناسب وابدأ التعلم مع أفضل المدرسين.
+        {{
+          showingLatestCourses
+            ? 'اكتشف أحدث الكورسات التي أضافها مدرسونا.'
+            : 'الكورسات التي اختارها الطلاب أكثر، مرتبة حسب طلبات الاشتراك.'
+        }}
       </p>
     </header>
 
-    <nav
-      class="courses-section__filters d-flex flex-wrap justify-content-center gap-2 mb-4 mb-lg-5"
-      aria-label="تصفية الكورسات حسب المادة"
-      data-aos="zoom-in"
-      data-aos-delay="150"
-    >
-      <button type="button" class="courses-section__chip courses-section__chip--active">
-        الكل
-      </button>
-      <button type="button" class="courses-section__chip">الرياضيات</button>
-      <button type="button" class="courses-section__chip">الفيزياء</button>
-      <button type="button" class="courses-section__chip">الكيمياء</button>
-      <button type="button" class="courses-section__chip">الأحياء</button>
-      <button type="button" class="courses-section__chip">اللغة العربية</button>
-      <button type="button" class="courses-section__chip">اللغة الإنجليزية</button>
-    </nav>
-
-    <div class="row g-4 g-lg-5">
+    @if (isLoading) {
+      <div class="courses-section__empty" role="status">
+        <span class="spinner-border text-primary" aria-hidden="true"></span>
+        <strong>جاري تحميل الكورسات...</strong>
+      </div>
+    } @else if (loadError) {
+      <div class="courses-section__empty">
+        <i class="fa-solid fa-cloud-arrow-down"></i>
+        <strong>تعذر تحميل الكورسات</strong>
+        <p>تأكد من اتصالك بالإنترنت وحاول مرة أخرى.</p>
+        <button type="button" class="btn courses-section__cta mt-2" (click)="loadCourses()">
+          إعادة المحاولة
+        </button>
+      </div>
+    } @else if (courses.length) {
+      <div class="row g-4 g-lg-5">
       @for (course of courses; track course.id) {
         <div class="col-12 col-md-6 col-lg-4 d-flex" data-aos="zoom-in-up" data-aos-delay="0">
           <article class="courses-section__card w-100">
@@ -35,6 +37,12 @@
                 <i class="fa-solid fa-book-open"></i>
               </span>
               <span class="courses-section__subject">{{ course.subject }}</span>
+              @if (!showingLatestCourses) {
+                <span class="courses-section__demand">
+                  <i class="fa-solid fa-arrow-trend-up"></i>
+                  {{ course.requestCount }} طلب
+                </span>
+              }
             </div>
 
             <div class="courses-section__content">
@@ -71,12 +79,21 @@
           </article>
         </div>
       }
-    </div>
+      </div>
+    } @else {
+      <div class="courses-section__empty">
+        <i class="fa-regular fa-chart-bar"></i>
+        <strong>لا توجد كورسات حتى الآن</strong>
+        <p>الكورسات الجديدة هتظهر هنا فور إضافتها.</p>
+      </div>
+    }
 
-    <div class="courses-section__footer text-center mt-4 mt-lg-5">
-      <a routerLink="/all-courses" class="btn btn-primary-custom courses-section__cta px-4 py-2">
-        عرض جميع الكورسات
-      </a>
-    </div>
+    @if (!isLoading && !loadError && courses.length) {
+      <div class="courses-section__footer text-center mt-4 mt-lg-5">
+        <a routerLink="/all-courses" class="btn btn-primary-custom courses-section__cta px-4 py-2">
+          عرض جميع الكورسات
+        </a>
+      </div>
+    }
   </div>
 </section>

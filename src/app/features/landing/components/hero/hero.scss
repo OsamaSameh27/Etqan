@@ -142,14 +142,15 @@
     border-color: rgba($primary, 0.3);
   }
 
-  .stat-number {
-    font-size: 1.8rem;
-    font-weight: 800;
+  .stat-icon {
+    font-size: 1.35rem;
     color: $primary;
-    background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    margin-bottom: 0.35rem;
+  }
+
+  .stat-label {
+    color: $text-light !important;
+    font-weight: 700;
   }
 }
 

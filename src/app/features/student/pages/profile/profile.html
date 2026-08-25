@@ -224,6 +224,84 @@
               </button>
             </footer>
           }
+
+          <section class="security-section">
+            <header class="security-section__header">
+              <div class="section-title">
+                <span class="section-title__icon">
+                  <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                </span>
+                <div>
+                  <span>أمان الحساب</span>
+                  <h2>كلمة المرور</h2>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                class="password-toggle-button"
+                [disabled]="isChangingPassword"
+                (click)="togglePasswordForm()"
+              >
+                <i class="fa-solid" [class.fa-key]="!showPasswordForm" [class.fa-xmark]="showPasswordForm" aria-hidden="true"></i>
+                {{ showPasswordForm ? 'إلغاء' : 'تغيير كلمة المرور' }}
+              </button>
+            </header>
+
+            @if (showPasswordForm) {
+              <div class="password-form">
+                <label>
+                  <span>كلمة المرور الحالية</span>
+                  <input
+                    type="password"
+                    class="profile-input"
+                    autocomplete="current-password"
+                    [(ngModel)]="passwordData.currentPassword"
+                  />
+                </label>
+                <label>
+                  <span>كلمة المرور الجديدة</span>
+                  <input
+                    type="password"
+                    class="profile-input"
+                    autocomplete="new-password"
+                    minlength="6"
+                    [(ngModel)]="passwordData.newPassword"
+                  />
+                </label>
+                <label>
+                  <span>تأكيد كلمة المرور الجديدة</span>
+                  <input
+                    type="password"
+                    class="profile-input"
+                    autocomplete="new-password"
+                    minlength="6"
+                    [(ngModel)]="passwordData.confirmPassword"
+                  />
+                </label>
+                <p>
+                  <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                  بعد التغيير ستحتاج لتسجيل الدخول مرة أخرى.
+                </p>
+                <button
+                  type="button"
+                  class="save-button password-submit-button"
+                  [disabled]="isChangingPassword"
+                  (click)="changePassword()"
+                >
+                  @if (isChangingPassword) {
+                    <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+                    جاري التغيير...
+                  } @else {
+                    <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                    حفظ كلمة المرور الجديدة
+                  }
+                </button>
+              </div>
+            } @else {
+              <p class="security-section__hint">استخدم كلمة مرور قوية ومختلفة عن حساباتك الأخرى.</p>
+            }
+          </section>
         </main>
       </div>
     } @else {

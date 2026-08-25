@@ -1,5 +1,4 @@
-import { Component, inject } from '@angular/core';
-import { UserService } from '../../../../../core/services/user-service';
+import { Component } from '@angular/core';
 import { TopNavbar } from '../../../../student/components/top-navbar/top-navbar';
 import { Sidebar } from "../../../components/sidebar/sidebar";
 import { RouterOutlet } from '@angular/router';
@@ -10,10 +9,4 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './thdashboard.html',
   styleUrl: './thdashboard.scss',
 })
-export class Thdashboard {
-  private userService = inject(UserService);
-  user = this.userService.user;
-
-  constructor() {
-  }
-}
+export class Thdashboard {}

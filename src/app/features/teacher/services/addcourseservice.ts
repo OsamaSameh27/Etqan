@@ -2,6 +2,7 @@ import { Service } from '@angular/core';
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { db } from '../../../core/firebase';
 import { Course } from '../../../core/models/course.model';
+import { EnrollmentRequest } from '../../../core/models/enrollment-request.model';
 
 @Service()
 export class AddcourseService {
@@ -33,6 +34,19 @@ export class AddcourseService {
 
   async getAllCourses() {
     return await getDocs(this.courseCollection);
+  }
+
+  async syncRequestCounts(requests: EnrollmentRequest[]) {
+    const counts = requests.reduce<Record<string, number>>((courseCounts, request) => {
+      courseCounts[request.courseId] = (courseCounts[request.courseId] ?? 0) + 1;
+      return courseCounts;
+    }, {});
+
+    await Promise.all(
+      Object.entries(counts).map(([courseId, requestCount]) =>
+        updateDoc(doc(db, 'courses', courseId), { requestCount }),
+      ),
+    );
   }
   async getCourseById(id: string) {
     const courseRef = doc(db, 'courses', id);

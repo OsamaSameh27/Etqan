@@ -1,8 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { UserService } from '../../../../core/services/user-service';
-import { AuthServices } from '../../../auth/services/auth.services';
-import { Router, RouterOutlet } from '@angular/router';
-import { Alerts } from '../../../../core/utils/alerts';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 import { Sidebar } from '../../components/sidebar/sidebar';
 import { TopNavbar } from '../../components/top-navbar/top-navbar';

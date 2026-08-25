@@ -1,0 +1,599 @@
+@use './variables.scss' as *;
+
+.dashboard-overview {
+  min-height: calc(100vh - 72px);
+  padding: 104px 2rem 3rem;
+  color: $text-dark;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 1.75rem;
+
+    h1 {
+      margin: 0.35rem 0 0.45rem;
+      font-size: clamp(1.65rem, 3vw, 2.25rem);
+      font-weight: 800;
+    }
+
+    p {
+      margin: 0;
+      color: $text-light;
+      line-height: 1.8;
+    }
+  }
+
+  &__eyebrow {
+    color: $primary;
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+}
+
+.dashboard-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 46px;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: $transition;
+  white-space: nowrap;
+
+  &--primary {
+    color: #fff;
+    background: linear-gradient(135deg, $primary, $primary-dark);
+    box-shadow: 0 8px 22px rgba($primary, 0.24);
+
+    &:hover {
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba($primary, 0.32);
+    }
+  }
+}
+
+.dashboard-alert,
+.dashboard-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 70px;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: $radius-md;
+}
+
+.dashboard-alert {
+  color: #8b4a23;
+  background: #fff6e8;
+  border: 1px solid #efd8b6;
+}
+
+.dashboard-loading {
+  min-height: 280px;
+  color: $text-light;
+  background: #fff;
+  border: 1px solid $border-color;
+
+  .spinner-border {
+    width: 1.4rem;
+    height: 1.4rem;
+    color: $primary;
+  }
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.dashboard-stat {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 112px;
+  padding: 1.2rem;
+  background: #fff;
+  border: 1px solid $border-color;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+
+  &__icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    border-radius: 15px;
+    font-size: 1.15rem;
+  }
+
+  div {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  strong {
+    font-size: 1.6rem;
+    line-height: 1.2;
+  }
+
+  div span {
+    color: $text-light;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+
+  &--brown .dashboard-stat__icon { color: $primary; background: rgba($primary, 0.12); }
+  &--gold .dashboard-stat__icon { color: #9a691d; background: #fff3d6; }
+  &--blue .dashboard-stat__icon { color: #376a93; background: #e9f4fc; }
+  &--green .dashboard-stat__icon { color: #39734d; background: #eaf7ee; }
+  &--red .dashboard-stat__icon { color: #a64848; background: #fff0f0; }
+}
+
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(290px, 0.8fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.dashboard-stack {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.dashboard-panel {
+  padding: 1.35rem;
+  background: #fff;
+  border: 1px solid $border-color;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+
+  &--wide {
+    min-height: 100%;
+  }
+
+  &--requests {
+    margin-top: 1.25rem;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.15rem;
+
+    h2 {
+      margin: 0.15rem 0 0;
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+
+    > a {
+      color: $primary;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+  }
+
+  &__kicker {
+    color: $text-light;
+    font-size: 0.68rem;
+    font-weight: 600;
+  }
+
+  &__total {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    color: $primary;
+    background: rgba($primary, 0.1);
+    border-radius: 50%;
+    font-size: 0.8rem;
+    font-weight: 800;
+  }
+}
+
+.dashboard-course-list,
+.dashboard-request-list,
+.dashboard-capacity-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.dashboard-course-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1rem;
+  background: $background;
+  border: 1px solid rgba($border-color, 0.85);
+  border-radius: $radius-md;
+
+  &__icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    color: $primary;
+    background: #fff;
+    border: 1px solid $border-color;
+    border-radius: 13px;
+  }
+
+  &__main {
+    display: grid;
+    gap: 0.15rem;
+    min-width: 0;
+
+    strong {
+      overflow: hidden;
+      font-size: 0.88rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    span {
+      color: $primary;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+  }
+
+  &__schedule {
+    display: grid;
+    gap: 0.3rem;
+    color: $text-light;
+    font-size: 0.68rem;
+    text-align: left;
+
+    i {
+      width: 15px;
+      color: $primary;
+    }
+  }
+}
+
+.dashboard-request-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid $border-color;
+
+  &:last-child { border-bottom: 0; }
+
+  > div {
+    display: grid;
+    flex: 1;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+
+  strong {
+    overflow: hidden;
+    font-size: 0.82rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  div span,
+  time {
+    color: $text-light;
+    font-size: 0.67rem;
+  }
+
+  &__avatar {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    color: #fff;
+    background: linear-gradient(135deg, $primary, $secondary);
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+}
+
+.dashboard-request-list--grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 1.5rem;
+}
+
+.request-status {
+  padding: 0.28rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  white-space: nowrap;
+
+  &--pending { color: #8b611b; background: #fff5db; }
+  &--approved { color: #39734d; background: #eaf7ee; }
+  &--rejected { color: #a64848; background: #fff0f0; }
+}
+
+.dashboard-capacity-row {
+  padding: 0.9rem 0;
+  border-bottom: 1px solid $border-color;
+
+  &:last-child { border-bottom: 0; }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.65rem;
+
+    > div { display: grid; gap: 0.15rem; }
+    strong { font-size: 0.84rem; }
+    span { color: $text-light; font-size: 0.68rem; }
+    > span { color: $text-dark; font-weight: 700; white-space: nowrap; }
+  }
+
+  > small {
+    display: block;
+    margin-top: 0.35rem;
+    color: $text-light;
+    font-size: 0.64rem;
+  }
+}
+
+.dashboard-progress {
+  height: 7px;
+  overflow: hidden;
+  background: #eee8e1;
+  border-radius: 999px;
+
+  span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, $secondary, $primary);
+    border-radius: inherit;
+  }
+}
+
+.dashboard-quick-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+
+  a {
+    display: grid;
+    place-items: center;
+    gap: 0.45rem;
+    min-height: 82px;
+    padding: 0.75rem 0.35rem;
+    color: $text-dark;
+    background: $background;
+    border: 1px solid $border-color;
+    border-radius: $radius-md;
+    font-size: 0.66rem;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    transition: $transition;
+
+    i { color: $primary; font-size: 1rem; }
+
+    &:hover {
+      color: $primary;
+      border-color: rgba($primary, 0.4);
+      transform: translateY(-2px);
+    }
+  }
+}
+
+.dashboard-status-chart {
+  display: grid;
+  gap: 0.85rem;
+
+  > div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.35rem 0.75rem;
+
+    > span {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      color: $text-light;
+      font-size: 0.72rem;
+    }
+
+    > strong { font-size: 0.75rem; }
+
+    > div {
+      grid-column: 1 / -1;
+      height: 5px;
+      overflow: hidden;
+      background: #eee;
+      border-radius: 999px;
+
+      i {
+        display: block;
+        height: 100%;
+        background: $primary;
+        border-radius: inherit;
+      }
+    }
+  }
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  &--pending { background: #d59a34; }
+  &--approved { background: #4d9a67; }
+  &--rejected { background: #c85a5a; }
+}
+
+.dashboard-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-height: 250px;
+  padding: 2rem;
+  color: $text-light;
+  text-align: center;
+
+  > i { color: $primary; font-size: 1.8rem; }
+  strong { color: $text-dark; font-size: 0.9rem; }
+  p { margin: 0; font-size: 0.72rem; }
+  a { margin-top: 0.4rem; color: $primary; font-size: 0.75rem; font-weight: 800; }
+
+  &--compact { min-height: 150px; }
+}
+
+.dashboard-inline-button {
+  margin-top: 0.4rem;
+  padding: 0.65rem 1.25rem;
+  color: #fff;
+  background: $primary;
+  border: 0;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.dashboard-enrollment-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.dashboard-enrollment-card {
+  padding: 1.25rem;
+  background: linear-gradient(145deg, #fff, $background);
+  border: 1px solid $border-color;
+  border-radius: $radius-lg;
+
+  &__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+
+    > span {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      color: #fff;
+      background: linear-gradient(135deg, $primary, $primary-dark);
+      border-radius: 13px;
+    }
+
+    small {
+      color: $text-light;
+      font-size: 0.63rem;
+    }
+  }
+
+  h2 {
+    margin: 0 0 0.3rem;
+    font-size: 1rem;
+    font-weight: 800;
+    line-height: 1.6;
+  }
+
+  > p {
+    margin: 0 0 1rem;
+    color: $primary;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  dl {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0 0 1rem;
+    padding: 0.85rem;
+    background: #fff;
+    border: 1px solid rgba($border-color, 0.85);
+    border-radius: $radius-md;
+
+    div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    dt,
+    dd {
+      margin: 0;
+      font-size: 0.68rem;
+    }
+
+    dt { color: $text-light; font-weight: 600; }
+    dt i { width: 16px; color: $primary; }
+    dd { color: $text-dark; font-weight: 700; text-align: left; }
+  }
+
+  > a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: $primary;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-decoration: none;
+  }
+}
+
+@media (max-width: 1199px) {
+  .dashboard-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dashboard-layout { grid-template-columns: 1fr; }
+  .dashboard-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dashboard-enrollment-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 767px) {
+  .dashboard-overview {
+    padding: 92px 1rem 2rem;
+
+    &__header {
+      align-items: stretch;
+      flex-direction: column;
+    }
+  }
+
+  .dashboard-action { align-self: flex-start; }
+  .dashboard-stat { min-height: 98px; padding: 1rem; }
+  .dashboard-stack { grid-template-columns: 1fr; }
+  .dashboard-course-row { grid-template-columns: auto minmax(0, 1fr); }
+  .dashboard-course-row__schedule { grid-column: 2; text-align: right; }
+  .dashboard-request-list--grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 575px) {
+  .dashboard-stats { grid-template-columns: 1fr; }
+  .dashboard-stat { min-height: 86px; }
+  .dashboard-panel { padding: 1.1rem; }
+  .dashboard-quick-actions { grid-template-columns: 1fr; }
+  .dashboard-quick-actions a { grid-template-columns: auto 1fr; justify-items: start; min-height: 54px; padding: 0.7rem 0.9rem; }
+  .dashboard-enrollment-grid { grid-template-columns: 1fr; }
+}

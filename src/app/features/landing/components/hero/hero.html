@@ -8,52 +8,57 @@
     >
       <div class="hero-content">
         <!-- Badge -->
-        <span
-          class="hero-badge mb-3 d-inline-flex align-items-center gap-2 fw-bold rounded-pill px-3 py-1.5"
-        >
-          <span class="badge-dot"></span>
-          منصة تعليمية متكاملة 🚀
-        </span>
+
         <!-- Main Heading -->
         <h1 class="hero-title mb-3 fw-extrabold lh-base">
-          كل ما يحتاجه <span class="text-gradient">الطالب والمدرس</span> في مكان واحد
+          اختار كورسك وانضم إلى <span class="text-gradient">المجموعة المناسبة</span> ليك
         </h1>
         <!-- Description -->
         <p class="hero-desc mb-4 fs-5 mx-auto mx-lg-0">
-          منصة <strong>إتقان</strong> تساعد المدرسين على إدارة الكورسات والامتحانات والمجموعات،
-          وتمنح الطلاب تجربة تعليمية تفاعلية وسهلة.
+          تصفح الكورسات، راجع مواعيد المجموعات، وارفع إيصال التحويل. المدرس يراجع طلبك
+          وتقدر تتابع حالته بسهولة من لوحة التحكم.
         </p>
         <!-- Buttons -->
         <div
           class="d-flex flex-column flex-sm-row gap-3 mb-5 justify-content-center justify-content-sm-start"
         >
-          <a class="btn btn-primary-custom hero-btn px-4 py-2.5 shadow-sm" routerLink="/register">
-            <span>ابدأ الآن مجاناً</span>
+          <a class="btn btn-primary-custom hero-btn px-4 py-2.5 shadow-sm" routerLink="/all-courses">
+            <span>تصفح جميع الكورسات</span>
             <i class="fa-solid fa-arrow-left ms-2"></i>
           </a>
-          <a class="btn btn-outline-custom hero-btn px-4 py-2.5" href="#teachers">
-            <span>تصفح المدرسين</span>
-            <i class="fa-solid fa-graduation-cap ms-2"></i>
-          </a>
+          @if (!user()) {
+            <a class="btn btn-outline-custom hero-btn px-4 py-2.5" routerLink="/register">
+              <span>إنشاء حساب</span>
+              <i class="fa-solid fa-user-plus ms-2"></i>
+            </a>
+          } @else {
+            <a
+              class="btn btn-outline-custom hero-btn px-4 py-2.5"
+              [routerLink]="user()?.role === 'teacher' ? '/dashboard/teacher' : '/dashboard/student'"
+            >
+              <span>الذهاب إلى لوحة التحكم</span>
+              <i class="fa-solid fa-table-columns ms-2"></i>
+            </a>
+          }
         </div>
         <!-- Statistics Row -->
         <div class="hero-stats row g-3 mx-auto mx-lg-0" data-aos="fade-up" data-aos-delay="200">
           <div class="col-12 col-sm-4">
             <div class="stat-card py-3 px-2 text-center">
-              <div class="stat-number fw-extrabold text-primary">+120</div>
-              <div class="stat-label small text-muted mt-1">مدرس معتمد</div>
+              <div class="stat-icon"><i class="fa-solid fa-book-open"></i></div>
+              <div class="stat-label small text-muted mt-1">كورسات حسب مرحلتك</div>
             </div>
           </div>
           <div class="col-12 col-sm-4">
             <div class="stat-card py-3 px-2 text-center">
-              <div class="stat-number fw-extrabold text-primary">+300</div>
-              <div class="stat-label small text-muted mt-1">كورس تفاعلي</div>
+              <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+              <div class="stat-label small text-muted mt-1">مواعيد مجموعات واضحة</div>
             </div>
           </div>
           <div class="col-12 col-sm-4">
             <div class="stat-card py-3 px-2 text-center">
-              <div class="stat-number fw-extrabold text-primary">+5000</div>
-              <div class="stat-label small text-muted mt-1">طالب نشط</div>
+              <div class="stat-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+              <div class="stat-label small text-muted mt-1">متابعة حالة الطلب</div>
             </div>
           </div>
         </div>

@@ -68,7 +68,7 @@ export class CourseDetails {
       }
 
       if (this.course.teacherId) {
-        const teacher = await this.authService.getUserData(this.course.teacherId);
+        const teacher = await this.authService.getPublicTeacherProfile(this.course.teacherId);
 
         if (teacher) {
           this.teacherName = teacher.name;

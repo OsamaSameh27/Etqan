@@ -1,0 +1,120 @@
+<main class="dashboard-overview" dir="rtl">
+  <header class="dashboard-overview__header">
+    <div>
+      <span class="dashboard-overview__eyebrow">{{ today }}</span>
+      <h1>أهلًا {{ user()?.name || 'بك' }} 👋</h1>
+      <p>
+        {{ user()?.studentGrade || 'المرحلة الثانوية' }}
+        @if (user()?.studentTrack) {
+          <span>• {{ user()?.studentTrack }}</span>
+        }
+        — تابع كورساتك وطلبات اشتراكك من هنا.
+      </p>
+    </div>
+    <a routerLink="/all-courses" class="dashboard-action dashboard-action--primary">
+      <i class="fa-solid fa-compass" aria-hidden="true"></i>
+      تصفح الكورسات
+    </a>
+  </header>
+
+  @if (loadFailed) {
+    <div class="dashboard-alert" role="alert">
+      <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+      تعذر تحميل جزء من بياناتك. تأكد من الاتصال بالإنترنت ثم أعد تحميل الصفحة.
+    </div>
+  }
+
+  @if (isLoading) {
+    <div class="dashboard-loading" role="status">
+      <span class="spinner-border" aria-hidden="true"></span>
+      <span>جاري تجهيز لوحة التحكم...</span>
+    </div>
+  } @else {
+    <section class="dashboard-stats" aria-label="ملخص حساب الطالب">
+      <article class="dashboard-stat dashboard-stat--brown">
+        <span class="dashboard-stat__icon"><i class="fa-solid fa-book-open"></i></span>
+        <div><strong>{{ enrollments.length }}</strong><span>كورساتي الحالية</span></div>
+      </article>
+      <article class="dashboard-stat dashboard-stat--gold">
+        <span class="dashboard-stat__icon"><i class="fa-solid fa-file-lines"></i></span>
+        <div><strong>{{ requests.length }}</strong><span>إجمالي الطلبات</span></div>
+      </article>
+      <article class="dashboard-stat dashboard-stat--blue">
+        <span class="dashboard-stat__icon"><i class="fa-regular fa-clock"></i></span>
+        <div><strong>{{ countRequests('pending') }}</strong><span>قيد المراجعة</span></div>
+      </article>
+      <article class="dashboard-stat dashboard-stat--red">
+        <span class="dashboard-stat__icon"><i class="fa-solid fa-circle-xmark"></i></span>
+        <div><strong>{{ countRequests('rejected') }}</strong><span>طلبات مرفوضة</span></div>
+      </article>
+    </section>
+
+    <div class="dashboard-layout">
+      <section class="dashboard-panel dashboard-panel--wide">
+        <header class="dashboard-panel__header">
+          <div>
+            <span class="dashboard-panel__kicker">اشتراكات فعالة</span>
+            <h2>كورساتي ومجموعاتي</h2>
+          </div>
+          <a routerLink="/dashboard/student/my-courses">عرض الكل</a>
+        </header>
+
+        @if (enrollments.length) {
+          <div class="dashboard-course-list">
+            @for (enrollment of enrollments.slice(0, 3); track enrollment.id) {
+              <article class="dashboard-course-row">
+                <span class="dashboard-course-row__icon"><i class="fa-solid fa-book"></i></span>
+                <div class="dashboard-course-row__main">
+                  <strong>{{ enrollment.courseTitle }}</strong>
+                  <span>{{ enrollment.groupName }}</span>
+                </div>
+                <div class="dashboard-course-row__schedule">
+                  <span><i class="fa-regular fa-calendar"></i> {{ scheduleDays(enrollment) }}</span>
+                  <span><i class="fa-regular fa-clock"></i> {{ scheduleTime(enrollment) }}</span>
+                </div>
+              </article>
+            }
+          </div>
+        } @else {
+          <div class="dashboard-empty">
+            <i class="fa-solid fa-book-open-reader" aria-hidden="true"></i>
+            <strong>لسه مفيش كورسات مقبولة</strong>
+            <p>اختار الكورس والمجموعة المناسبة وأرسل طلب اشتراكك.</p>
+            <a routerLink="/all-courses">تصفح الكورسات</a>
+          </div>
+        }
+      </section>
+
+      <aside class="dashboard-panel">
+        <header class="dashboard-panel__header">
+          <div>
+            <span class="dashboard-panel__kicker">آخر تحديثاتك</span>
+            <h2>أحدث الطلبات</h2>
+          </div>
+          <a routerLink="/dashboard/student/requests">عرض الكل</a>
+        </header>
+
+        @if (recentRequests.length) {
+          <div class="dashboard-request-list">
+            @for (request of recentRequests; track request.id) {
+              <article class="dashboard-request-row">
+                <div>
+                  <strong>{{ request.courseTitle }}</strong>
+                  <span>{{ request.groupName }} • {{ requestDate(request) }}</span>
+                </div>
+                <span class="request-status request-status--{{ request.status }}">
+                  {{ statusLabel(request.status) }}
+                </span>
+              </article>
+            }
+          </div>
+        } @else {
+          <div class="dashboard-empty dashboard-empty--compact">
+            <i class="fa-regular fa-folder-open"></i>
+            <strong>لا توجد طلبات حتى الآن</strong>
+          </div>
+        }
+      </aside>
+    </div>
+  }
+</main>

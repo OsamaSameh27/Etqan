@@ -93,7 +93,7 @@ export class AllCourses implements OnInit {
 
     const teachers = await Promise.all(
       teacherIds.map(async (teacherId) => {
-        const teacher = await this.authService.getUserData(teacherId);
+        const teacher = await this.authService.getPublicTeacherProfile(teacherId);
 
         return [
           teacherId,

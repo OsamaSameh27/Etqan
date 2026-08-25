@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <!-- Logo: Always on the right (RTL) -->
     <a class="navbar-brand fw-bold fs-3 text-primary-brown me-lg-4" routerLink="/" fragment="hero">
-      <img src="/logo.png" alt="" />
+      <img src="/logo.png" alt="إتقان" />
     </a>
 
     <!-- Desktop nav: center, mobile: hidden unless collapsed -->
@@ -30,33 +30,64 @@
             class="nav-link px-2"
             routerLink="/"
             fragment="hero"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
+            [class.active]="activeSection() === 'hero'"
+            [attr.aria-current]="activeSection() === 'hero' ? 'page' : null"
+            (click)="selectSection('hero')"
             >الرئيسية</a
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link px-2" routerLink="/" fragment="features" routerLinkActive="active"
-            >لماذا إتقان؟</a
+          <a
+            class="nav-link px-2"
+            routerLink="/"
+            fragment="courses"
+            [class.active]="activeSection() === 'courses'"
+            [attr.aria-current]="activeSection() === 'courses' ? 'page' : null"
+            (click)="selectSection('courses')"
+            >الكورسات</a
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link px-2" routerLink="/" fragment="teachers" routerLinkActive="active"
+          <a
+            class="nav-link px-2"
+            routerLink="/"
+            fragment="how-it-works"
+            [class.active]="activeSection() === 'how-it-works'"
+            [attr.aria-current]="activeSection() === 'how-it-works' ? 'page' : null"
+            (click)="selectSection('how-it-works')"
+            >كيف تشترك؟</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link px-2"
+            routerLink="/"
+            fragment="teachers"
+            [class.active]="activeSection() === 'teachers'"
+            [attr.aria-current]="activeSection() === 'teachers' ? 'page' : null"
+            (click)="selectSection('teachers')"
             >المدرسون</a
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link px-2" routerLink="/" fragment="courses" routerLinkActive="active"
-            >المواد</a
-          >
-        </li>
-        <li class="nav-item">
-          <a class="nav-link px-2" routerLink="/" fragment="faq" routerLinkActive="active"
+          <a
+            class="nav-link px-2"
+            routerLink="/"
+            fragment="faq"
+            [class.active]="activeSection() === 'faq'"
+            [attr.aria-current]="activeSection() === 'faq' ? 'page' : null"
+            (click)="selectSection('faq')"
             >الأسئلة الشائعة</a
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link px-2" routerLink="/" fragment="contact" routerLinkActive="active"
+          <a
+            class="nav-link px-2"
+            routerLink="/"
+            fragment="contact"
+            [class.active]="activeSection() === 'contact'"
+            [attr.aria-current]="activeSection() === 'contact' ? 'page' : null"
+            (click)="selectSection('contact')"
             >تواصل معنا</a
           >
         </li>

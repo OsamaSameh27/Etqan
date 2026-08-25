@@ -32,6 +32,7 @@ export class TeacherEnrollmentError extends Error {
 @Service()
 export class TeacherEnrollmentService {
   private requestsCollection = collection(db, 'enrollmentRequests');
+  private enrollmentsCollection = collection(db, 'enrollments');
 
   listenToTeacherRequests(
     teacherId: string,
@@ -54,6 +55,32 @@ export class TeacherEnrollmentService {
           .sort((first, second) => second.createdAt.toMillis() - first.createdAt.toMillis());
 
         onRequestsChanged(requests);
+      },
+      onError,
+    );
+  }
+
+  listenToTeacherEnrollments(
+    teacherId: string,
+    onEnrollmentsChanged: (enrollments: Enrollment[]) => void,
+    onError: (error: Error) => void,
+  ) {
+    const teacherEnrollmentsQuery = query(
+      this.enrollmentsCollection,
+      where('teacherId', '==', teacherId),
+    );
+
+    return onSnapshot(
+      teacherEnrollmentsQuery,
+      (snapshot) => {
+        const enrollments = snapshot.docs
+          .map((enrollmentDocument) => ({
+            id: enrollmentDocument.id,
+            ...(enrollmentDocument.data() as Enrollment),
+          }))
+          .sort((first, second) => second.joinedAt.toMillis() - first.joinedAt.toMillis());
+
+        onEnrollmentsChanged(enrollments);
       },
       onError,
     );

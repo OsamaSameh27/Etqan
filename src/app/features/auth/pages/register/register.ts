@@ -232,6 +232,23 @@ export class Register {
       }
       await this.authServices.saveUserData(userCredential.user.uid, userData);
 
+      if (formValue.role === 'teacher') {
+        await Promise.all([
+          this.authServices.savePublicTeacherProfile(userCredential.user.uid, {
+            name: userData.name,
+            image: userData.image ?? '',
+            subject: userData.subject ?? '',
+            bio: userData.bio ?? '',
+            experienceYears: userData.experienceYears ?? 0,
+            grades: userData.grades ?? [],
+          }),
+          this.authServices.saveTeacherPaymentProfile(userCredential.user.uid, {
+            teacherId: userCredential.user.uid,
+            paymentPhone: userData.phone,
+          }),
+        ]);
+      }
+
       Alerts.success('تم إنشاء الحساب بنجاح', 'تم إنشاء الحساب بنجاح');
       await this.router.navigate(['/login']);
     } catch (error: any) {

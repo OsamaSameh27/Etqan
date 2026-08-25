@@ -3,24 +3,10 @@
 .courses-section {
   padding: 5rem 0;
 
-  &__header { max-width: 44rem; margin-top: 50px; }
+  &__header { max-width: 44rem; margin-top: 127px; }
   &__title { position: relative; display: inline-block; color: $text-dark; font-size: 2.4rem; font-weight: 800; }
   &__title::after { content: ''; position: absolute; right: 50%; bottom: -9px; width: 55px; height: 3px; background: $secondary; border-radius: 10px; transform: translateX(50%); }
   &__subtitle { color: $text-light; font-size: 1.08rem; line-height: 1.8; }
-
-  &__chip {
-    padding: .55rem 1.15rem;
-    color: $text-light;
-    font-size: .88rem;
-    font-weight: 700;
-    background: #fff;
-    border: 1px solid $border-color;
-    border-radius: 999px;
-    transition: $transition;
-
-    &:hover { color: $primary; border-color: $primary; }
-    &--active { color: #fff; background: $primary; border-color: $primary; }
-  }
 
   &__card {
     display: flex;
@@ -56,6 +42,7 @@
   }
 
   &__subject { color: $primary-dark; font-size: .85rem; font-weight: 800; }
+  &__demand { display: flex; align-items: center; gap: .3rem; padding: .28rem .55rem; color: #39734d; font-size: .66rem; font-weight: 800; background: #edf8f0; border-radius: 999px; }
   &__content { display: flex; flex: 1; flex-direction: column; padding: 1.4rem; }
   &__grade { align-self: flex-start; margin-bottom: .55rem; color: $primary; font-size: .75rem; font-weight: 800; }
   &__course-title { min-height: 3.4rem; margin: 0 0 .55rem; color: $text-dark; font-size: 1.18rem; font-weight: 800; line-height: 1.55; }
@@ -119,6 +106,11 @@
 
     &:hover { color: #fff; background: $primary-dark; transform: translateY(-2px); }
   }
+
+  &__empty { min-height: 220px; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: .55rem; padding: 2rem; text-align: center; background: #fff; border: 1px dashed $border-color; border-radius: $radius-lg; }
+  &__empty > i { color: $primary; font-size: 1.7rem; }
+  &__empty strong { font-size: .95rem; }
+  &__empty p { margin: 0; color: $text-light; font-size: .75rem; }
 }
 
 @media (max-width: 767px) {

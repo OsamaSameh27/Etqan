@@ -97,86 +97,16 @@
     transition: transform 0.3s ease;
   }
 
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
   &:hover {
     color: $text-dark;
 
     i {
       transform: scale(1.2) rotate(-5deg);
-    }
-  }
-}
-
-.footer-social a {
-  width: 46px;
-  height: 46px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-decoration: none;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.95);
-  color: $primary;
-  border: 1.5px solid $border-color;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(8px);
-
-  &:hover {
-    transform: translateY(-4px) rotate(8deg);
-    background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
-    border-color: transparent;
-    color: white;
-    box-shadow: 0 8px 20px rgba($primary, 0.35);
-  }
-}
-
-.btn-app-download {
-  border-radius: 999px;
-  padding: 0.7rem 1.35rem;
-  font-weight: 700;
-  font-size: 0.92rem;
-  background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
-  color: white;
-  border: none;
-  box-shadow: 0 6px 18px rgba($primary, 0.25);
-  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s ease;
-  }
-
-  &:hover::before {
-    left: 100%;
-  }
-
-  &:hover {
-    background: linear-gradient(135deg, $primary-dark 0%, $primary 100%);
-    color: white;
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba($primary, 0.4);
-  }
-
-  &.outline {
-    background: rgba(255, 255, 255, 0.95);
-    border: 1.5px solid $border-color;
-    color: $text-dark;
-    box-shadow: none;
-
-    &:hover {
-      border-color: $primary;
-      color: $primary;
-      background: rgba($primary, 0.06);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
     }
   }
 }
@@ -195,14 +125,8 @@
     right: 50%;
     transform: translateX(50%);
   }
-  .footer-social {
-    justify-content: center;
-  }
   .footer-contact-info li {
     justify-content: center;
-  }
-  .download-buttons {
-    align-items: center;
   }
 }
 
@@ -212,9 +136,5 @@
   }
   .footer-logo {
     width: 75px;
-  }
-  .btn-app-download {
-    padding: 0.6rem 1.1rem;
-    font-size: 0.85rem;
   }
 }

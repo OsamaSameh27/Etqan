@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { Course } from '../../../../../core/models/course.model';
 import { Group } from '../../../../../core/models/group.model';
@@ -24,6 +25,7 @@ export class Profile {
   private addGroupService = inject(Addgroupservice);
   private userService = inject(UserService);
   private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
 
   user: User | null = null;
   courses: Course[] = [];
@@ -33,6 +35,13 @@ export class Profile {
   isSaving = false;
   selectedImage: File | null = null;
   imagePreview = '';
+  showPasswordForm = false;
+  isChangingPassword = false;
+  passwordData = {
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  };
 
   editData = {
     name: '',
@@ -139,7 +148,21 @@ export class Profile {
         image: imageUrl,
       };
 
-      await this.authService.saveUserData(firebaseUser.uid, updatedUser);
+      await Promise.all([
+        this.authService.saveUserData(firebaseUser.uid, updatedUser),
+        this.authService.savePublicTeacherProfile(firebaseUser.uid, {
+          name: updatedUser.name,
+          image: updatedUser.image ?? '',
+          subject: updatedUser.subject ?? '',
+          bio: updatedUser.bio ?? '',
+          experienceYears: updatedUser.experienceYears ?? 0,
+          grades: updatedUser.grades ?? [],
+        }),
+        this.authService.saveTeacherPaymentProfile(firebaseUser.uid, {
+          teacherId: firebaseUser.uid,
+          paymentPhone: updatedUser.phone,
+        }),
+      ]);
       this.user = updatedUser;
       this.userService.user.set(updatedUser);
       this.revokeLocalPreview();
@@ -152,6 +175,59 @@ export class Profile {
       Alerts.error('تعذر حفظ البيانات', 'حاول مرة أخرى بعد قليل');
     } finally {
       this.isSaving = false;
+      this.cdr.detectChanges();
+    }
+  }
+
+  togglePasswordForm() {
+    this.showPasswordForm = !this.showPasswordForm;
+    if (!this.showPasswordForm) this.resetPasswordForm();
+  }
+
+  async changePassword() {
+    if (this.isChangingPassword) return;
+
+    if (!this.passwordData.currentPassword) {
+      Alerts.error('كلمة المرور الحالية مطلوبة', 'اكتب كلمة المرور الحالية أولًا');
+      return;
+    }
+
+    if (this.passwordData.newPassword.length < 6) {
+      Alerts.error('كلمة المرور قصيرة', 'كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل');
+      return;
+    }
+
+    if (this.passwordData.newPassword !== this.passwordData.confirmPassword) {
+      Alerts.error('كلمتا المرور غير متطابقتين', 'تأكد من كتابة كلمة المرور الجديدة بشكل صحيح');
+      return;
+    }
+
+    if (this.passwordData.currentPassword === this.passwordData.newPassword) {
+      Alerts.error('اختر كلمة مرور مختلفة', 'كلمة المرور الجديدة مطابقة لكلمة المرور الحالية');
+      return;
+    }
+
+    this.isChangingPassword = true;
+
+    try {
+      await this.authService.changeCurrentUserPassword(
+        this.passwordData.currentPassword,
+        this.passwordData.newPassword,
+      );
+      await this.authService.logout();
+      Alerts.success('تم تغيير كلمة المرور', 'سجل الدخول مرة أخرى باستخدام كلمة المرور الجديدة');
+      await this.router.navigate(['/login']);
+    } catch (error: any) {
+      const isWrongPassword =
+        error?.code === 'auth/invalid-credential' || error?.code === 'auth/wrong-password';
+      Alerts.error(
+        'تعذر تغيير كلمة المرور',
+        isWrongPassword
+          ? 'كلمة المرور الحالية غير صحيحة'
+          : 'حدث خطأ أثناء تغيير كلمة المرور، حاول مرة أخرى',
+      );
+    } finally {
+      this.isChangingPassword = false;
       this.cdr.detectChanges();
     }
   }
@@ -198,5 +274,13 @@ export class Profile {
     if (this.selectedImage && this.imagePreview.startsWith('blob:')) {
       URL.revokeObjectURL(this.imagePreview);
     }
+  }
+
+  private resetPasswordForm() {
+    this.passwordData = {
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+    };
   }
 }

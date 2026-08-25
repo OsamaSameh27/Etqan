@@ -97,6 +97,7 @@ export class AddCourse {
       } else {
         const newCourse: Course = {
           ...courseData,
+          requestCount: 0,
           createdAt: Timestamp.now(),
           teacherId: firebaseUser.uid,
         };

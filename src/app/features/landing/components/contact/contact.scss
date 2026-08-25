@@ -1,314 +1,214 @@
 @use './../../../../../styles/variables.scss' as *;
-@use 'sass:color';
 
 .contact-section {
   &__header {
     max-width: 44rem;
-    margin-top: 100px;
+    margin-top: 70px;
   }
 
   &__title {
     color: $text-dark;
+    display: inline-block;
     font-size: 2.4rem;
     font-weight: 800;
     line-height: 1.3;
     position: relative;
-    display: inline-block;
 
     &::after {
-      content: '';
-      position: absolute;
+      background: linear-gradient(90deg, $primary, $secondary);
+      border-radius: 999px;
       bottom: -8px;
+      content: '';
+      height: 4px;
+      position: absolute;
       right: 50%;
       transform: translateX(50%);
       width: 60px;
-      height: 4px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, $primary, $secondary);
     }
   }
 
   &__subtitle {
     color: $text-light;
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     line-height: 1.8;
   }
 
-  &__form-card,
-  &__info-card {
+  &__panel {
+    background: $surface;
+    border: 1px solid rgba($border-color, 0.9);
     border-radius: $radius-xl;
-    padding: 2.5rem 2rem;
-    position: relative;
+    box-shadow: 0 18px 55px rgba(0, 0, 0, 0.08);
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    max-width: 960px;
     overflow: hidden;
   }
 
-  &__form-card {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba($border-color, 0.85);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  &__intro {
+    background: linear-gradient(145deg, $primary-dark, $primary);
+    color: white;
+    padding: 3rem;
+    position: relative;
 
-    &::before {
+    &::after {
+      background: rgba($secondary, 0.16);
+      border-radius: 50%;
       content: '';
+      height: 220px;
+      left: -90px;
       position: absolute;
-      top: 0;
-      right: 0;
-      width: 200px;
-      height: 200px;
-      background: radial-gradient(circle, rgba($secondary, 0.08) 0%, transparent 70%);
-      pointer-events: none;
+      top: -90px;
+      width: 220px;
     }
 
-    &:hover {
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.08);
-      border-color: rgba($primary, 0.25);
+    h3 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      margin: 1rem 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    p {
+      color: rgba(255, 255, 255, 0.82);
+      line-height: 1.9;
+      margin: 0 0 2rem;
+      position: relative;
+      z-index: 1;
     }
   }
 
-  &__info-card {
-    background: linear-gradient(135deg, rgba($primary, 0.03) 0%, rgba($secondary, 0.05) 100%);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba($border-color, 0.85);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+  &__eyebrow {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+    display: inline-flex;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 0.4rem 0.9rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__note {
+    align-items: center;
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    font-size: 0.9rem;
+    font-weight: 600;
+    gap: 0.6rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__channels {
     display: flex;
     flex-direction: column;
-    position: relative;
-    overflow: hidden;
-
-    &::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -30%;
-      width: 250px;
-      height: 250px;
-      background: radial-gradient(circle, rgba($secondary, 0.12) 0%, transparent 70%);
-      pointer-events: none;
-    }
+    gap: 1rem;
+    justify-content: center;
+    padding: 2.5rem;
   }
 
-  &__card-title {
-    color: $text-dark;
-    font-size: 1.35rem;
-    font-weight: 700;
-    position: relative;
-    z-index: 1;
-  }
-
-  &__label {
-    color: $text-dark;
-    font-size: 0.92rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    position: relative;
-    z-index: 1;
-  }
-
-  &__input {
-    background: rgba(255, 255, 255, 0.95);
-    border: 1.5px solid $border-color;
-    border-radius: $radius-md;
-    color: $text-dark;
-    font-size: 0.95rem;
-    padding: 0.85rem 1.1rem;
-    transition: all 0.3s ease;
-    position: relative;
-    z-index: 1;
-
-    &:focus {
-      border-color: $primary;
-      box-shadow: 0 0 0 4px rgba($primary, 0.1);
-      background: #fff;
-      outline: none;
-    }
-
-    &::placeholder {
-      color: color.adjust($text-light, $lightness: 10%);
-    }
-  }
-
-  &__textarea {
-    min-height: 150px;
-    resize: vertical;
-    border-radius: $radius-md;
-  }
-
-  &__submit {
-    font-size: 1rem;
-    font-weight: 700;
-    border-radius: 999px;
-    background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
-    color: white;
-    border: none;
-    box-shadow: 0 8px 25px rgba($primary, 0.3);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
-    padding: 0.9rem 2rem;
-
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.5s ease;
-    }
-
-    &:hover::before {
-      left: 100%;
-    }
-
-    &:hover {
-      background: linear-gradient(135deg, $primary-dark 0%, $primary 100%);
-      transform: translateY(-3px);
-      box-shadow: 0 12px 30px rgba($primary, 0.4);
-      color: white;
-    }
-  }
-
-  &__info-item {
+  &__channel {
     align-items: center;
+    background: $background;
+    border: 1px solid $border-color;
+    border-radius: $radius-lg;
+    color: $text-dark;
     display: flex;
-    gap: 1.25rem;
-    margin-bottom: 1.5rem;
-    position: relative;
-    z-index: 1;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
+    gap: 1rem;
+    padding: 1.25rem;
+    text-decoration: none;
+    transition: 0.3s ease;
 
     &:hover {
-      .contact-section__info-icon {
-        transform: scale(1.1);
-        background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+      border-color: rgba($primary, 0.45);
+      box-shadow: 0 12px 28px rgba($primary, 0.1);
+      color: $text-dark;
+      transform: translateY(-4px);
+
+      .contact-section__channel-icon {
+        background: linear-gradient(135deg, $primary, $primary-dark);
         color: white;
-        box-shadow: 0 8px 20px rgba($primary, 0.3);
+      }
+
+      .contact-section__arrow {
+        color: $primary;
+        transform: translateX(-4px);
       }
     }
   }
 
-  &__info-icon {
+  &__channel-icon {
     align-items: center;
-    background: linear-gradient(135deg, rgba($secondary, 0.25) 0%, rgba($secondary, 0.15) 100%);
+    background: rgba($secondary, 0.2);
     border-radius: $radius-md;
     color: $primary;
     display: flex;
-    flex-shrink: 0;
-    font-size: 1.15rem;
+    flex: 0 0 56px;
+    font-size: 1.2rem;
     height: 56px;
     justify-content: center;
-    width: 56px;
-    border: 1px solid rgba($secondary, 0.35);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: 0.3s ease;
   }
 
-  &__info-label {
-    color: $text-light;
-    font-size: 0.85rem;
-    font-weight: 600;
-  }
-
-  &__info-value {
-    color: $text-dark;
-    font-size: 1rem;
-    font-weight: 700;
-    text-decoration: none;
-    transition: color 0.3s ease;
-    display: block;
-
-    &:hover {
-      color: $primary;
-    }
-  }
-
-  &__social-label {
-    color: $text-dark;
-    font-size: 1rem;
-    font-weight: 700;
-    position: relative;
-    z-index: 1;
-  }
-
-  &__social-links {
-    position: relative;
-    z-index: 1;
-  }
-
-  &__social-link {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.95);
-    border: 1.5px solid $border-color;
-    border-radius: 50%;
-    color: $primary;
+  &__channel-content {
     display: flex;
-    font-size: 1.05rem;
-    height: 48px;
-    justify-content: center;
-    text-decoration: none;
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    width: 48px;
-    backdrop-filter: blur(8px);
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
 
-    &:hover {
-      background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
-      border-color: transparent;
-      color: white;
-      transform: translateY(-4px) rotate(8deg);
-      box-shadow: 0 8px 20px rgba($primary, 0.35);
+    small,
+    span {
+      color: $text-light;
+      font-size: 0.82rem;
     }
+
+    strong {
+      color: $text-dark;
+      font-size: 1.05rem;
+      margin: 0.2rem 0;
+      overflow-wrap: anywhere;
+      text-align: right;
+    }
+  }
+
+  &__arrow {
+    color: $text-light;
+    transition: 0.3s ease;
   }
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 767.98px) {
   .contact-section {
     &__title {
-      font-size: 2rem;
+      font-size: 1.8rem;
+    }
 
-      &::after {
-        width: 50px;
-        height: 3px;
-      }
+    &__panel {
+      grid-template-columns: 1fr;
     }
-    &__subtitle {
-      font-size: 1.05rem;
-    }
-    &__form-card,
-    &__info-card {
-      padding: 2rem 1.75rem;
+
+    &__intro,
+    &__channels {
+      padding: 2rem 1.5rem;
     }
   }
 }
 
 @media (max-width: 575.98px) {
   .contact-section {
-    &__title {
-      font-size: 1.6rem;
+    &__header {
+      margin-top: 30px;
     }
-    &__subtitle {
-      font-size: 0.98rem;
+
+    &__channel {
+      padding: 1rem;
     }
-    &__form-card,
-    &__info-card {
-      padding: 1.75rem 1.5rem;
-    }
-    &__info-icon {
-      width: 48px;
+
+    &__channel-icon {
+      flex-basis: 48px;
       height: 48px;
-      font-size: 1rem;
-    }
-    &__info-item {
-      gap: 1rem;
-    }
-    &__social-link {
-      width: 42px;
-      height: 42px;
-      font-size: 0.95rem;
     }
   }
 }

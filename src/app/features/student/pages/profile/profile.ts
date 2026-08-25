@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { User } from '../../../../core/models/user.model';
 import { UserService } from '../../../../core/services/user-service';
@@ -18,6 +19,7 @@ export class Profile {
   private cloudinaryService = inject(CloudinaryService);
   private userService = inject(UserService);
   private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
 
   user: User | null = null;
   isLoading = true;
@@ -25,6 +27,13 @@ export class Profile {
   isSaving = false;
   selectedImage: File | null = null;
   imagePreview = '';
+  showPasswordForm = false;
+  isChangingPassword = false;
+  passwordData = {
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  };
 
   editData = {
     name: '',
@@ -148,6 +157,59 @@ export class Profile {
     }
   }
 
+  togglePasswordForm() {
+    this.showPasswordForm = !this.showPasswordForm;
+    if (!this.showPasswordForm) this.resetPasswordForm();
+  }
+
+  async changePassword() {
+    if (this.isChangingPassword) return;
+
+    if (!this.passwordData.currentPassword) {
+      Alerts.error('كلمة المرور الحالية مطلوبة', 'اكتب كلمة المرور الحالية أولًا');
+      return;
+    }
+
+    if (this.passwordData.newPassword.length < 6) {
+      Alerts.error('كلمة المرور قصيرة', 'كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل');
+      return;
+    }
+
+    if (this.passwordData.newPassword !== this.passwordData.confirmPassword) {
+      Alerts.error('كلمتا المرور غير متطابقتين', 'تأكد من كتابة كلمة المرور الجديدة بشكل صحيح');
+      return;
+    }
+
+    if (this.passwordData.currentPassword === this.passwordData.newPassword) {
+      Alerts.error('اختر كلمة مرور مختلفة', 'كلمة المرور الجديدة مطابقة لكلمة المرور الحالية');
+      return;
+    }
+
+    this.isChangingPassword = true;
+
+    try {
+      await this.authService.changeCurrentUserPassword(
+        this.passwordData.currentPassword,
+        this.passwordData.newPassword,
+      );
+      await this.authService.logout();
+      Alerts.success('تم تغيير كلمة المرور', 'سجل الدخول مرة أخرى باستخدام كلمة المرور الجديدة');
+      await this.router.navigate(['/login']);
+    } catch (error: any) {
+      const isWrongPassword =
+        error?.code === 'auth/invalid-credential' || error?.code === 'auth/wrong-password';
+      Alerts.error(
+        'تعذر تغيير كلمة المرور',
+        isWrongPassword
+          ? 'كلمة المرور الحالية غير صحيحة'
+          : 'حدث خطأ أثناء تغيير كلمة المرور، حاول مرة أخرى',
+      );
+    } finally {
+      this.isChangingPassword = false;
+      this.cdr.detectChanges();
+    }
+  }
+
   get profileImage() {
     return this.isEditing && this.imagePreview ? this.imagePreview : (this.user?.image ?? '');
   }
@@ -202,5 +264,13 @@ export class Profile {
     if (this.selectedImage && this.imagePreview.startsWith('blob:')) {
       URL.revokeObjectURL(this.imagePreview);
     }
+  }
+
+  private resetPasswordForm() {
+    this.passwordData = {
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+    };
   }
 }

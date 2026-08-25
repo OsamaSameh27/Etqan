@@ -9,6 +9,7 @@ export interface Course {
   createdAt: Timestamp;
   teacherId: string;
   grade: string;
+  requestCount?: number;
 }
 
 

@@ -1,76 +1,39 @@
 <footer class="footer py-5" id="footer" dir="rtl">
   <div class="container">
     <div class="footer-top pb-4">
-      <div class="row gy-5">
-        <!-- Brand -->
-        <div class="col-lg-4" data-aos="fade-up">
+      <div class="row gy-5 justify-content-between">
+        <div class="col-lg-5">
           <a routerLink="/" fragment="hero" class="d-inline-block text-decoration-none mb-3">
             <img src="/logo.png" alt="إتقان" class="footer-logo" width="90" />
           </a>
-          <p class="footer-desc mb-4">
-            منصة تعليمية متكاملة تساعد الطلاب والمدرسين على إدارة العملية التعليمية بطريقة سهلة، تفاعلية وحديثة.
+          <p class="footer-desc mb-0">
+            منصة تساعد طلاب المرحلة الثانوية على اختيار الكورس والمجموعة المناسبة، وتسهّل
+            على المدرسين تنظيم الكورسات ومراجعة طلبات الاشتراك.
           </p>
-
-          <div class="footer-social d-flex gap-2">
-            <a href="#" aria-label="Facebook">
-              <i class="fa-brands fa-facebook-f"></i>
-            </a>
-            <a href="#" aria-label="Instagram">
-              <i class="fa-brands fa-instagram"></i>
-            </a>
-            <a href="#" aria-label="LinkedIn">
-              <i class="fa-brands fa-linkedin-in"></i>
-            </a>
-            <a href="#" aria-label="YouTube">
-              <i class="fa-brands fa-youtube"></i>
-            </a>
-          </div>
         </div>
 
-        <!-- Quick Links -->
-        <div class="col-lg-2 col-md-4" data-aos="fade-up" data-aos-delay="150">
+        <div class="col-lg-3 col-md-5">
           <h5 class="footer-heading mb-4">روابط سريعة</h5>
           <ul class="list-unstyled footer-links">
-            <li class="mb-2.5"><a href="#hero">الرئيسية</a></li>
-            <li class="mb-2.5"><a href="#teachers">المدرسين</a></li>
-            <li class="mb-2.5"><a href="#courses">الكورسات</a></li>
-            <li class="mb-2.5"><a href="#faq">الأسئلة الشائعة</a></li>
+            <li class="mb-2"><a routerLink="/" fragment="hero">الرئيسية</a></li>
+            <li class="mb-2"><a routerLink="/all-courses">جميع الكورسات</a></li>
+            <li class="mb-2"><a routerLink="/" fragment="how-it-works">كيف تشترك؟</a></li>
+            <li class="mb-2"><a routerLink="/" fragment="faq">الأسئلة الشائعة</a></li>
           </ul>
         </div>
 
-        <!-- Contact Info -->
-        <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="250">
+        <div class="col-lg-3 col-md-5">
           <h5 class="footer-heading mb-4">تواصل معنا</h5>
           <ul class="list-unstyled footer-contact-info">
             <li class="mb-3 d-flex align-items-center gap-2">
-              <i class="fa-solid fa-envelope"></i>
-              <span>info@etqan.com</span>
+              <i class="fa-solid fa-phone" aria-hidden="true"></i>
+              <a href="tel:+201212901554" dir="ltr">01212901554</a>
             </li>
             <li class="mb-3 d-flex align-items-center gap-2">
-              <i class="fa-solid fa-phone"></i>
-              <span>+966 50 123 4567</span>
-            </li>
-            <li class="mb-3 d-flex align-items-center gap-2">
-              <i class="fa-solid fa-location-dot"></i>
-              <span>الرياض، المملكة العربية السعودية</span>
+              <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+              <a href="mailto:info@etqan.com" dir="ltr">info@etqan.com</a>
             </li>
           </ul>
-        </div>
-
-        <!-- Download App -->
-        <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="350">
-          <h5 class="footer-heading mb-3">حمل التطبيق</h5>
-          <p class="small text-muted mb-3">قريباً على جميع المتاجر الذكية.</p>
-          <div class="download-buttons d-flex flex-column gap-2.5">
-            <button class="btn btn-app-download d-flex align-items-center justify-content-center gap-2">
-              <i class="fa-brands fa-apple fs-5"></i>
-              <span>App Store</span>
-            </button>
-            <button class="btn btn-app-download outline d-flex align-items-center justify-content-center gap-2">
-              <i class="fa-brands fa-google-play fs-6"></i>
-              <span>Google Play</span>
-            </button>
-          </div>
         </div>
       </div>
     </div>

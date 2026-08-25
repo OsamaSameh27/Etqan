@@ -34,38 +34,6 @@
     line-height: 1.8;
   }
 
-  &__chip {
-    background: rgba(255, 255, 255, 0.95);
-    border: 1.5px solid rgba($border-color, 0.9);
-    border-radius: 999px;
-    color: $text-dark;
-    font-size: 0.92rem;
-    font-weight: 600;
-    padding: 0.6rem 1.35rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    backdrop-filter: blur(8px);
-
-    &:hover {
-      border-color: $primary;
-      color: $primary;
-      transform: translateY(-3px);
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
-    }
-
-    &--active {
-      background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
-      border-color: transparent;
-      color: white;
-      box-shadow: 0 6px 20px rgba($primary, 0.3);
-
-      &:hover {
-        color: white;
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba($primary, 0.4);
-      }
-    }
-  }
-
   &__card {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(16px);
@@ -170,22 +138,6 @@
     z-index: 1;
   }
 
-  &__rating {
-    color: #f59e0b;
-    font-size: 0.95rem;
-    position: relative;
-    z-index: 1;
-
-    .fa-star {
-      font-size: 0.9rem;
-    }
-
-    span {
-      color: $text-dark;
-      font-weight: 700;
-    }
-  }
-
   &__stats {
     display: flex;
     flex-direction: column;
@@ -236,27 +188,40 @@
     }
   }
 
-  &__btn {
-    font-size: 0.95rem;
-    font-weight: 700;
-    border-radius: 999px;
-    padding: 0.7rem 1.25rem;
-    border: 1.5px solid $border-color;
-    color: $text-dark;
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(8px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    z-index: 1;
+  &__state {
+    align-items: center;
+    background: $surface;
+    border: 1px dashed $border-color;
+    border-radius: $radius-lg;
+    color: $text-light;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    justify-content: center;
+    min-height: 220px;
+    padding: 2rem;
+    text-align: center;
 
-    &:hover {
-      border-color: $primary;
+    > i {
       color: $primary;
-      background: rgba($primary, 0.06);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+      font-size: 1.7rem;
+    }
+
+    strong {
+      color: $text-dark;
     }
   }
+
+  &__retry {
+    background: $primary;
+    border: 0;
+    border-radius: 999px;
+    color: white;
+    font-weight: 700;
+    padding: 0.65rem 1.3rem;
+
+  }
+
 }
 
 @media (max-width: 991.98px) {

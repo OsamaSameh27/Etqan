@@ -10,6 +10,7 @@ import { Group } from '../../../../../core/models/group.model';
 import { Alerts } from '../../../../../core/utils/alerts';
 import { AuthServices } from '../../../../auth/services/auth.services';
 import { Addgroupservice } from '../../../services/addgroupservice';
+import { AddcourseService } from '../../../services/addcourseservice';
 import {
   TeacherEnrollmentError,
   TeacherEnrollmentService,
@@ -28,6 +29,7 @@ export class TeacherEnrollmentRequests {
   private authService = inject(AuthServices);
   private enrollmentService = inject(TeacherEnrollmentService);
   private groupService = inject(Addgroupservice);
+  private courseService = inject(AddcourseService);
   private cdr = inject(ChangeDetectorRef);
   private unsubscribeRequests?: Unsubscribe;
   private teacherUid = '';
@@ -57,6 +59,7 @@ export class TeacherEnrollmentRequests {
           this.isLoading = false;
           this.loadFailed = false;
           void this.loadGroupsAvailability(requests);
+          void this.courseService.syncRequestCounts(requests);
           this.cdr.detectChanges();
         },
         (error) => {

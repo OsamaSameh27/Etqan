@@ -2,7 +2,7 @@
 
 .features-section {
   &__header {
-    margin-top: 155px;
+    margin-top: 70px;
 
     max-width: 44rem;
   }
@@ -144,8 +144,6 @@
 
 @media (max-width: 575.98px) {
   .features-section {
-    margin-top: -40px !important;
-
     &__title {
       font-size: 1.6rem;
 

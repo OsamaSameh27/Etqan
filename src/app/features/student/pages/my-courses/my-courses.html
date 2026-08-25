@@ -1,1 +1,76 @@
-<p>my-courses works!</p>
+<main class="dashboard-overview" dir="rtl">
+  <header class="dashboard-overview__header">
+    <div>
+      <span class="dashboard-overview__eyebrow">اشتراكاتك المقبولة</span>
+      <h1>دوراتي</h1>
+      <p>كل الكورسات والمجموعات التي تم قبول اشتراكك فيها.</p>
+    </div>
+    <a routerLink="/all-courses" class="dashboard-action dashboard-action--primary">
+      <i class="fa-solid fa-plus" aria-hidden="true"></i>
+      كورس جديد
+    </a>
+  </header>
+
+  @if (isLoading) {
+    <div class="dashboard-loading" role="status">
+      <span class="spinner-border" aria-hidden="true"></span>
+      <span>جاري تحميل كورساتك...</span>
+    </div>
+  } @else if (loadFailed) {
+    <div class="dashboard-panel">
+      <div class="dashboard-empty">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <strong>تعذر تحميل كورساتك</strong>
+        <p>تأكد من الاتصال بالإنترنت وصلاحيات الحساب.</p>
+        <button type="button" class="dashboard-inline-button" (click)="loadCourses()">
+          إعادة المحاولة
+        </button>
+      </div>
+    </div>
+  } @else if (enrollments.length) {
+    <section class="dashboard-panel">
+      <header class="dashboard-panel__header">
+        <div>
+          <span class="dashboard-panel__kicker">{{ enrollments.length }} اشتراك فعّال</span>
+          <h2>الكورسات والمواعيد</h2>
+        </div>
+      </header>
+
+      <div class="dashboard-enrollment-grid">
+        @for (enrollment of enrollments; track enrollment.id) {
+          <article class="dashboard-enrollment-card">
+            <div class="dashboard-enrollment-card__top">
+              <span><i class="fa-solid fa-book-open"></i></span>
+              <small>مشترك منذ {{ joinedDate(enrollment) }}</small>
+            </div>
+            <h2>{{ enrollment.courseTitle }}</h2>
+            <p>{{ enrollment.groupName }}</p>
+            <dl>
+              <div>
+                <dt><i class="fa-regular fa-calendar"></i> الأيام</dt>
+                <dd>{{ scheduleDays(enrollment) }}</dd>
+              </div>
+              <div>
+                <dt><i class="fa-regular fa-clock"></i> الموعد</dt>
+                <dd>{{ scheduleTime(enrollment) }}</dd>
+              </div>
+            </dl>
+            <a [routerLink]="['/course-details', enrollment.courseId]">
+              تفاصيل الكورس
+              <i class="fa-solid fa-arrow-left"></i>
+            </a>
+          </article>
+        }
+      </div>
+    </section>
+  } @else {
+    <section class="dashboard-panel">
+      <div class="dashboard-empty">
+        <i class="fa-solid fa-book-open-reader"></i>
+        <strong>لسه مفيش كورسات في قائمتك</strong>
+        <p>بعد ما المدرس يقبل طلب الاشتراك، الكورس والمجموعة هيظهروا هنا تلقائيًا.</p>
+        <a routerLink="/all-courses">تصفح جميع الكورسات</a>
+      </div>
+    </section>
+  }
+</main>

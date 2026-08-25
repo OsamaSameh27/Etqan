@@ -1,0 +1,165 @@
+<main class="dashboard-overview" dir="rtl">
+  <header class="dashboard-overview__header">
+    <div>
+      <span class="dashboard-overview__eyebrow">{{ today }}</span>
+      <h1>{{ greeting }}، {{ user()?.name || 'أستاذنا' }} 👋</h1>
+      <p>{{ user()?.subject || 'مادتك' }} — نظرة سريعة على كورساتك ومجموعاتك وطلبات الطلاب.</p>
+    </div>
+    <a routerLink="/dashboard/teacher/add-course" class="dashboard-action dashboard-action--primary">
+      <i class="fa-solid fa-plus" aria-hidden="true"></i>
+      إضافة كورس
+    </a>
+  </header>
+
+  @if (loadFailed) {
+    <div class="dashboard-alert" role="alert">
+      <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+      تعذر تحميل جزء من بيانات لوحة التحكم. تأكد من الاتصال وصلاحيات Firestore.
+    </div>
+  }
+
+  @if (isLoading) {
+    <div class="dashboard-loading" role="status">
+      <span class="spinner-border" aria-hidden="true"></span>
+      <span>جاري تجهيز لوحة التحكم...</span>
+    </div>
+  } @else {
+    <section class="dashboard-stats" aria-label="ملخص حساب المدرس">
+      <article class="dashboard-stat dashboard-stat--brown">
+        <span class="dashboard-stat__icon"><i class="fa-solid fa-book-open"></i></span>
+        <div><strong>{{ courses.length }}</strong><span>إجمالي الكورسات</span></div>
+      </article>
+      <article class="dashboard-stat dashboard-stat--gold">
+        <span class="dashboard-stat__icon"><i class="fa-solid fa-users-rectangle"></i></span>
+        <div><strong>{{ groups.length }}</strong><span>المجموعات</span></div>
+      </article>
+      <article class="dashboard-stat dashboard-stat--green">
+        <span class="dashboard-stat__icon"><i class="fa-solid fa-user-graduate"></i></span>
+        <div><strong>{{ uniqueStudentsCount }}</strong><span>طلاب مشتركين</span></div>
+      </article>
+      <article class="dashboard-stat dashboard-stat--blue">
+        <span class="dashboard-stat__icon"><i class="fa-regular fa-clock"></i></span>
+        <div><strong>{{ countRequests('pending') }}</strong><span>طلبات منتظرة</span></div>
+      </article>
+    </section>
+
+    <div class="dashboard-layout">
+      <section class="dashboard-panel dashboard-panel--wide">
+        <header class="dashboard-panel__header">
+          <div>
+            <span class="dashboard-panel__kicker">السعة الحالية</span>
+            <h2>حالة المجموعات</h2>
+          </div>
+          <a routerLink="/dashboard/teacher/groups">إدارة المجموعات</a>
+        </header>
+
+        @if (groupsByOccupancy.length) {
+          <div class="dashboard-capacity-list">
+            @for (group of groupsByOccupancy; track group.id) {
+              <article class="dashboard-capacity-row">
+                <div class="dashboard-capacity-row__head">
+                  <div>
+                    <strong>{{ group.name }}</strong>
+                    <span>{{ courseTitle(group) }}</span>
+                  </div>
+                  <span>{{ group.currentStudents ?? 0 }} / {{ group.maxStudents }} طالب</span>
+                </div>
+                <div class="dashboard-progress" aria-hidden="true">
+                  <span [style.width.%]="occupancyPercentage(group)"></span>
+                </div>
+                <small>{{ remainingPlaces(group) }} أماكن متبقية</small>
+              </article>
+            }
+          </div>
+        } @else {
+          <div class="dashboard-empty">
+            <i class="fa-solid fa-users" aria-hidden="true"></i>
+            <strong>لم تُضف مجموعات حتى الآن</strong>
+            <p>أضف كورسًا أولًا ثم أنشئ المجموعة وحدد موعدها وسعتها.</p>
+            <a routerLink="/dashboard/teacher/groups">إضافة مجموعة</a>
+          </div>
+        }
+      </section>
+
+      <aside class="dashboard-stack">
+        <section class="dashboard-panel">
+          <header class="dashboard-panel__header">
+            <div>
+              <span class="dashboard-panel__kicker">وصول سريع</span>
+              <h2>إجراءات سريعة</h2>
+            </div>
+          </header>
+          <nav class="dashboard-quick-actions" aria-label="إجراءات المدرس السريعة">
+            <a routerLink="/dashboard/teacher/add-course">
+              <i class="fa-solid fa-book-medical"></i><span>إضافة كورس</span>
+            </a>
+            <a routerLink="/dashboard/teacher/groups">
+              <i class="fa-solid fa-users"></i><span>إدارة المجموعات</span>
+            </a>
+            <a routerLink="/dashboard/teacher/requests">
+              <i class="fa-solid fa-clipboard-check"></i><span>مراجعة الطلبات</span>
+            </a>
+          </nav>
+        </section>
+
+        <section class="dashboard-panel">
+          <header class="dashboard-panel__header">
+            <div>
+              <span class="dashboard-panel__kicker">توزيع الطلبات</span>
+              <h2>حالات الاشتراك</h2>
+            </div>
+            <span class="dashboard-panel__total">{{ requests.length }}</span>
+          </header>
+          <div class="dashboard-status-chart">
+            <div>
+              <span><i class="status-dot status-dot--pending"></i>قيد المراجعة</span>
+              <strong>{{ countRequests('pending') }}</strong>
+              <div><i [style.width.%]="statusPercentage('pending')"></i></div>
+            </div>
+            <div>
+              <span><i class="status-dot status-dot--approved"></i>تم القبول</span>
+              <strong>{{ countRequests('approved') }}</strong>
+              <div><i [style.width.%]="statusPercentage('approved')"></i></div>
+            </div>
+            <div>
+              <span><i class="status-dot status-dot--rejected"></i>مرفوض</span>
+              <strong>{{ countRequests('rejected') }}</strong>
+              <div><i [style.width.%]="statusPercentage('rejected')"></i></div>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </div>
+
+    <section class="dashboard-panel dashboard-panel--requests">
+      <header class="dashboard-panel__header">
+        <div>
+          <span class="dashboard-panel__kicker">تحتاج مراجعتك</span>
+          <h2>أحدث الطلبات المنتظرة</h2>
+        </div>
+        <a routerLink="/dashboard/teacher/requests">عرض كل الطلبات</a>
+      </header>
+
+      @if (recentPendingRequests.length) {
+        <div class="dashboard-request-list dashboard-request-list--grid">
+          @for (request of recentPendingRequests; track request.id) {
+            <article class="dashboard-request-row">
+              <span class="dashboard-request-row__avatar">{{ request.studentName.charAt(0) }}</span>
+              <div>
+                <strong>{{ request.studentName }}</strong>
+                <span>{{ request.courseTitle }} • {{ request.groupName }}</span>
+              </div>
+              <time>{{ requestDate(request) }}</time>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="dashboard-empty dashboard-empty--compact">
+          <i class="fa-solid fa-circle-check"></i>
+          <strong>لا توجد طلبات منتظرة</strong>
+          <p>كل طلبات الاشتراك تمت مراجعتها.</p>
+        </div>
+      }
+    </section>
+  }
+</main>

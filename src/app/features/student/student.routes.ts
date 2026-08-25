@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '../../core/Guards/auth-guard-guard';
 import { roleGuard } from '../../core/Guards/role-guard';
-import { MyCourses } from './pages/my-courses/my-courses';
 
 export const studentRoutes: Routes = [
   {
@@ -10,6 +9,11 @@ export const studentRoutes: Routes = [
     canActivate: [authGuard, roleGuard('student')],
     loadComponent: () => import('./pages/stdashboard/stdashboard').then((m) => m.Stdashboard),
     children: [
+      {
+        path: '',
+        title: 'لوحة تحكم الطالب | إتقان',
+        loadComponent: () => import('./pages/overview/overview').then((m) => m.StudentOverview),
+      },
       {
         path: 'my-courses',
         title: 'دوراتي | إتقان',
